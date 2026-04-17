@@ -1,6 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install && npm run build"
 
-export default defineConfig({
-  plugins: [react()],
-})
+[deploy]
+startCommand = "npm run start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
