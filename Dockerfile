@@ -7,7 +7,11 @@ COPY .npmrc ./
 
 RUN npm install --legacy-peer-deps
 
-COPY . .
+COPY index.html ./
+COPY vite.config.js ./
+COPY src ./src
+
+RUN ls -la && ls -la src/
 
 RUN npx vite build 2>&1
 
