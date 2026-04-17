@@ -10,8 +10,7 @@
   },
   "scripts": {
     "build": "react-scripts build",
-    "start": "node server.js",
-    "postinstall": "npm run build"
+    "start": "node server.js"
   },
   "browserslist": {
     "production": [">0.2%","not dead","not op_mini all"],
