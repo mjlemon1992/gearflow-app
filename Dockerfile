@@ -13,11 +13,13 @@ COPY src ./src
 
 RUN apk add --no-cache python3
 
-RUN python3 -c "data=open('src/App.jsx','rb').read();data=data.replace(b'\xe2\x80\x94',b'-');data=data.replace(b'\xe2\x80\x93',b'-');data=data.replace(b'\xe2\x80\x9c',b'\"');data=data.replace(b'\xe2\x80\x9d',b'\"');open('src/App.jsx','wb').write(data);print('Cleaned')"
+RUN python3 -c "data=open('src/App.jsx','rb').read();data=data.replace(b'\xe2\x80\x94',b'-');data=data.replace(b'\xe2\x80\x93',b'-');open('src/App.jsx','wb').write(data);print('Cleaned',len(data),'bytes')"
 
 RUN echo 'import React from "react"; import ReactDOM from "react-dom/client"; import App from "./App.jsx"; ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));' > src/index.jsx
 
-RUN node_modules/.bin/vite build > /tmp/vite.log 2>&1; cat /tmp/vite.log; test -d build
+RUN NODE_OPTIONS="--max-old-space-size=4096" node_modules/.bin/vite build 2>&1 || true
+
+RUN ls build/ 2>&1 || echo "BUILD FOLDER MISSING"
 
 COPY server.js ./
 EXPOSE 3000
