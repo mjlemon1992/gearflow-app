@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Fix smart quotes in App.jsx
+      - name: Fix special characters in App.jsx
         run: |
           python3 -c "
           data = open('src/App.jsx', 'rb').read()
@@ -20,6 +20,7 @@ jobs:
           data = data.replace(b'\xe2\x80\x99', b\"'\")
           data = data.replace(b'\xe2\x80\x94', b'-')
           data = data.replace(b'\xe2\x80\x93', b'-')
+          data = data.replace(b'\xe2\x80\xa6', b'...')
           open('src/App.jsx', 'wb').write(data)
           print('Fixed', len(data), 'bytes')
           "
