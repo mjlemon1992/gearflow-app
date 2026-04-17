@@ -1,6 +1,6 @@
 import { useState, useRef } from “react”;
 
-// ─── TRANSMISSION DATA ────────────────────────────────────────────────────────
+// — TRANSMISSION DATA ––––––––––––––––––––––––––––
 const TRANSMISSIONS = {
 “68RFE”: {
 label: “68RFE”, make: “Dodge/Ram”,
@@ -394,7 +394,7 @@ parts: [
 },
 };
 
-// ─── ADDITIONAL SERVICES ──────────────────────────────────────────────────────
+// — ADDITIONAL SERVICES ——————————————————
 const OTHER_SERVICES = {
 “TRANSFER_CASE”: {
 label: “Transfer Case”, make: “Various”, icon: “TC”,
@@ -636,7 +636,7 @@ const SERVICE_TYPE_GROUPS = [
 { label:“Manual Transmission”,     color:”#ce93d8”, keys: [“MANUAL_TRANS”] },
 ];
 
-// ─── REMOVAL CHECKLIST ───────────────────────────────────────────────────────
+// — REMOVAL CHECKLIST —————————————————––
 const REMOVAL_ITEMS = [
 { id:“ds_front”,    label:“Front Driveshaft”,           category:“driveline”, photo:false },
 { id:“ds_rear”,     label:“Rear Driveshaft”,            category:“driveline”, photo:false },
@@ -679,7 +679,7 @@ const STATUS_COLORS = { “Pass”:”#4caf50”,“Fail”:”#f44336”,“Nee
 
 const EMPTY_CUSTOM = () => ({ name:””, part:””, supplier:””, price:”” });
 
-// ─── DEMO RO DATA ─────────────────────────────────────────────────────────────
+// — DEMO RO DATA ———————————————————––
 const DEMO_ROS = {
 “RO-1001”: { vehicle:“2020 Ram 2500 6.7L Cummins”,         year:“2020”, trans:“68RFE”    },
 “RO-1002”: { vehicle:“2018 Chevrolet Silverado 1500 5.3L”, year:“2018”, trans:“6L80E”    },
@@ -694,7 +694,7 @@ const DEMO_ROS = {
 “RO-1011”: { vehicle:“2016 Jeep Wrangler 3.6L”,            year:“2016”, trans:“MANUAL_TRANS”  },
 };
 
-// ─── MAIN APP ────────────────────────────────────────────────────────────────
+// — MAIN APP ––––––––––––––––––––––––––––––––
 export default function TransmissionApp() {
 const [screen, setScreen]         = useState(“ro”);    // ro | stage1 | stage2 | advisor | settings
 const [roInfo, setRoInfo]         = useState({ ro:””, vehicle:””, year:””, trans:“68RFE” });
@@ -745,7 +745,7 @@ const [openTp, setOpenTp]         = useState(null);
 const photoRefs = useRef({});
 const trans = ALL_SERVICES[roInfo.trans] || ALL_SERVICES[“68RFE”];
 
-// ── helpers ──────────────────────────────────────────────────────────────
+// – helpers –––––––––––––––––––––––––––––––
 const setS1Item = (id, field, val) =>
 setS1Data(p => ({ …p, [id]: { …p[id], [field]: val } }));
 
@@ -760,13 +760,13 @@ return 0;
 const selectedParts = trans.parts.filter(p => s2Selected[p.id]);
 const customPartsTotal = s2Custom.reduce((s,c) => s + (parseFloat(c.price)||0), 0);
 
-// ── Shopmonkey helpers ────────────────────────────────────────────────────
+// – Shopmonkey helpers ––––––––––––––––––––––––––
 const lookupRO = async () => {
 if (!roInfo.ro) return;
 setRoLookup(“loading”);
 await new Promise(r => setTimeout(r, 900));
 if (demoMode) {
-const found = DEMO_ROS[roInfo.ro.toUpperCase().replace(/\s/g,””)];
+const found = DEMO_ROS[roInfo.ro.toUpperCase().replace(/[\s]/g,””)];
 if (found) {
 setRoInfo(p => ({…p, vehicle:found.vehicle, year:found.year, trans:found.trans}));
 setRoLookup(“found”);
@@ -775,7 +775,7 @@ setRoLookup(“found”);
 try {
 setApiDebug(null);
 const base = relayUrl.replace(/[/]$/, “”);
-const res = await fetch(`${base}/api/order/lookup?number=${encodeURIComponent(roInfo.ro)}`);
+const res = await fetch(”” + (base) + “/api/order/lookup?number=” + (encodeURIComponent(roInfo.ro)) + “”);
 const data = await res.json();
 setApiDebug(data);
 if (data.found) {
@@ -836,7 +836,7 @@ if (demoMode) {
     log.push({
       name: part.name,
       status: "success",
-     id: `DEMO-${Math.random().toString(36).slice(2,8).toUpperCase()}`,
+      id: "DEMO-" + (Math.random().toString(36).slice(2,8).toUpperCase()) + "",
       line: targetLine.name,
     });
     setPushLog([...log]);
@@ -849,7 +849,7 @@ if (demoMode) {
     const orderId = roInfo.orderId || roInfo.ro;
 
     // Get services via relay
-    const svcRes = await fetch(`${base}/api/order/${orderId}/services`);
+    const svcRes = await fetch("" + (base) + "/api/order/" + (orderId) + "/services");
     const svcData = await svcRes.json();
     const lines = svcData.services || [];
     setServiceLines(lines);
@@ -868,7 +868,7 @@ if (demoMode) {
     const log = [];
     for (const part of allParts) {
       try {
-        const res = await fetch(`${base}/api/order/${orderId}/service/${targetLine.id}/part`, {
+        const res = await fetch("" + (base) + "/api/order/" + (orderId) + "/service/" + (targetLine.id) + "/part", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -877,7 +877,7 @@ if (demoMode) {
             retailPrice: part.price || 0,
             wholesalePrice: part.price || 0,
             quantity: 1,
-            note: `Supplier: ${part.supplier||"-"} | Added via GearFlow`,
+            note: "Supplier: " + (part.supplier||"-") + " | Added via GearFlow",
           })
         });
         const d = await res.json();
@@ -913,8 +913,8 @@ const res = await fetch(“https://api.anthropic.com/v1/messages”, {
 method:“POST”, headers:{“Content-Type”:“application/json”},
 body: JSON.stringify({
 model:“claude-sonnet-4-20250514”, max_tokens:800,
-system:`You are a transmission service advisor coach. Generate brief, honest talking points for ${roInfo.trans} (${trans.make}) rebuild parts. Plain language only. Respond ONLY with JSON: {"why":"one sentence","risk":"one sentence","pitch":"one natural advisor sentence","pair":"one sentence companion part suggestion"}`,
-messages:[{ role:“user”, content:`Part: ${part.name} (${part.part || "no part#"}). Category: ${part.category}. ${price ? `Price: $${price}.`: ""} ${s2Notes[part.id] ?`Tech note: “${s2Notes[part.id]}”` : ""}` }]
+system:“You are a transmission service advisor coach. Generate brief, honest talking points for “ + roInfo.trans + “ (” + trans.make + “) rebuild parts. Plain language only. Respond ONLY with JSON: {"why":"one sentence","risk":"one sentence","pitch":"one natural advisor sentence","pair":"one sentence companion part suggestion"}”,
+messages:[{ role:“user”, content:“Part: “ + part.name + “ (” + (part.part || “no part#”) + “). Category: “ + part.category + “. “ + (price ? “Price: $” + price + “.” : “”) + “ “ + (s2Notes[part.id] ? “Tech note: “ + s2Notes[part.id] : “”) }]
 })
 });
 const data = await res.json();
@@ -932,7 +932,7 @@ pair:“Consider pairing with the matching filter or seal kit.”
 setLoadingTp(p => ({…p, [part.id]: false}));
 };
 
-// ── SCREENS ───────────────────────────────────────────────────────────────
+// – SCREENS —————————————————————
 return (
 <div style={{ fontFamily:”‘Share Tech Mono’,‘Courier New’,monospace”, background:”#e8edf2”, minHeight:“100vh”, color:”#1a2230” }}>
 <style>{`
@@ -941,7 +941,7 @@ return (
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#c0ccd8;border-radius:2px;}
 
 ```
-    /* ── BASE: light steel background, dark text ── */
+    /* -- BASE: light steel background, dark text -- */
     body{background:#e8edf2;}
 
     .hdr{background:#1a2230;border-bottom:3px solid #ff6b35;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,0.3);}
@@ -1123,15 +1123,15 @@ return (
       {!demoMode && apiKey && <span style={{fontSize:9,letterSpacing:2,background:"#22aa55",color:"#fff",padding:"2px 8px",borderRadius:3,fontWeight:700,textTransform:"uppercase"}}>LIVE</span>}
     </div>
     <div className="nav">
-      <button className={`nb ${screen==="ro"?"on":""}`} onClick={()=>setScreen("ro")}>RO</button>
-      <button className={`nb ${screen==="stage1"?"on":""}`} onClick={()=>setScreen("stage1")} disabled={!roInfo.ro}>S1: Removal</button>
-      <button className={`nb ${screen==="stage2"?"on":""}`} onClick={()=>setScreen("stage2")} disabled={!s1Signed}>S2: Strip</button>
-      <button className={`nb ${screen==="advisor"?"on":""}`} onClick={()=>setScreen("advisor")} disabled={!s2Signed}>Advisor</button>
-      <button className={`nb ${screen==="settings"?"on":""}`} onClick={()=>setScreen("settings")}>⚙</button>
+      <button className={"nb " + (screen==="ro"?"on":"") + ""} onClick={()=>setScreen("ro")}>RO</button>
+      <button className={"nb " + (screen==="stage1"?"on":"") + ""} onClick={()=>setScreen("stage1")} disabled={!roInfo.ro}>S1: Removal</button>
+      <button className={"nb " + (screen==="stage2"?"on":"") + ""} onClick={()=>setScreen("stage2")} disabled={!s1Signed}>S2: Strip</button>
+      <button className={"nb " + (screen==="advisor"?"on":"") + ""} onClick={()=>setScreen("advisor")} disabled={!s2Signed}>Advisor</button>
+      <button className={"nb " + (screen==="settings"?"on":"") + ""} onClick={()=>setScreen("settings")}>⚙</button>
     </div>
   </div>
 
-  {/* ── RO SCREEN ─────────────────────────────────────────────────── */}
+  {/* -- RO SCREEN --------------------------------------------------- */}
   {screen === "ro" && (
     <div className="pg">
       <div className="section-title">New Service Order</div>
@@ -1239,7 +1239,7 @@ return (
               return (
                 <div
                   key={key}
-                  className={`trans-card ${roInfo.trans===key?"sel":""}`}
+                  className={"trans-card " + (roInfo.trans===key?"sel":"") + ""}
                   style={{"--mc": MAKES[svc.make]||group.color}}
                   onClick={()=>setRoInfo(p=>({...p,trans:key}))}
                 >
@@ -1259,7 +1259,7 @@ return (
     </div>
   )}
 
-  {/* ── STAGE 1: REMOVAL ──────────────────────────────────────────── */}
+  {/* -- STAGE 1: REMOVAL -------------------------------------------- */}
   {screen === "stage1" && (
     <>
     <div className="pg">
@@ -1295,7 +1295,7 @@ return (
                       {STATUS_OPTS.map(s=>(
                         <button
                           key={s}
-                          className={`sbtn ${d.status===s?"on":""}`}
+                          className={"sbtn " + (d.status===s?"on":"") + ""}
                           style={d.status===s?{background:STATUS_COLORS[s],borderColor:STATUS_COLORS[s]}:{}}
                           onClick={()=>setS1Item(item.id,"status",d.status===s?"":s)}
                         >{s==="Needs Attention"?"Attn":s}</button>
@@ -1321,7 +1321,7 @@ return (
                           }}
                         />
                         <button
-                          className={`photo-btn ${d.photo?"has":""}`}
+                          className={"photo-btn " + (d.photo?"has":"") + ""}
                           onClick={()=>photoRefs.current[item.id]?.click()}
                         >{d.photo?"📷 Photo Taken":"📷 Add Photo"}</button>
                       </>
@@ -1353,17 +1353,17 @@ return (
         <span className="sign-label">Removal Tech Sign-Off</span>
         <input className="init-in" placeholder="INI" maxLength={4} value={s1Initials} onChange={e=>setS1Initials(e.target.value.toUpperCase())} disabled={s1Signed} />
         <button
-          className={`sign-btn ${s1Signed?"done":""}`}
+          className={"sign-btn " + (s1Signed?"done":"") + ""}
           disabled={s1Initials.length<2 || s1Signed}
           onClick={()=>{ setS1Signed(true); setScreen("stage2"); }}
-        >{s1Signed?`✓ Signed - ${s1Initials}`:"Sign & Advance to Strip →"}</button>
+        >{s1Signed?"✓ Signed - " + (s1Initials) + "":"Sign & Advance to Strip →"}</button>
       </div>
       <div style={{height:70}}/>
     </div>
     </>
   )}
 
-  {/* ── STAGE 2: STRIP DOWN ───────────────────────────────────────── */}
+  {/* -- STAGE 2: STRIP DOWN ----------------------------------------- */}
   {screen === "stage2" && (
     <>
     <div className="pg">
@@ -1389,9 +1389,9 @@ return (
       )}
 
       <div className="filter-bar">
-        <button className={`fcb ${filterCat==="all"?"on":""}`} style={{"--c":"#00cfff"}} onClick={()=>setFilterCat("all")}>All</button>
+        <button className={"fcb " + (filterCat==="all"?"on":"") + ""} style={{"--c":"#00cfff"}} onClick={()=>setFilterCat("all")}>All</button>
         {Object.entries(trans.categories).map(([k,v])=>(
-          <button key={k} className={`fcb ${filterCat===k?"on":""}`} style={{"--c":v.color}} onClick={()=>setFilterCat(k)}>{v.label}</button>
+          <button key={k} className={"fcb " + (filterCat===k?"on":"") + ""} style={{"--c":v.color}} onClick={()=>setFilterCat(k)}>{v.label}</button>
         ))}
       </div>
 
@@ -1413,7 +1413,7 @@ return (
                   const hasFixed = part.price !== null;
                   const showPart = roInfo.trans !== "CVT";
                   return (
-                    <div key={part.id} className={`pc ${isSel?"sel":""}`} style={{"--c":catInfo.color}} onClick={()=>togglePart(part.id)}>
+                    <div key={part.id} className={"pc " + (isSel?"sel":"") + ""} style={{"--c":catInfo.color}} onClick={()=>togglePart(part.id)}>
                       {isSel && <div className="chk">✓</div>}
                       <div className="pc-name">{part.name}</div>
                       {showPart && part.part && part.part !== "-" && <div className="pc-num">{part.part}</div>}
@@ -1455,23 +1455,23 @@ return (
         <span className="sign-label">Lead Tech Sign-Off</span>
         <input className="init-in" placeholder="INI" maxLength={4} value={s2Initials} onChange={e=>setS2Initials(e.target.value.toUpperCase())} disabled={s2Signed} />
         <button
-          className={`sign-btn ${s2Signed?"done":""}`}
+          className={"sign-btn " + (s2Signed?"done":"") + ""}
           disabled={s2Initials.length<2 || s2Signed || selectedParts.length===0}
           onClick={()=>{ setS2Signed(true); setScreen("advisor"); }}
-        >{s2Signed?`✓ Approved - ${s2Initials}`:"Approve & Send to Advisor →"}</button>
+        >{s2Signed?"✓ Approved - " + (s2Initials) + "":"Approve & Send to Advisor →"}</button>
       </div>
       <div style={{height:70}}/>
     </div>
 
     <div className="sticky-bot">
       <div className="sb-stat"><span className="sb-lbl">Parts</span><span className="sb-val og">{selectedParts.length}</span></div>
-      <div className="sb-stat"><span className="sb-lbl">Est. Total</span><span className="sb-val gn">{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</span></div>
+      <div className="sb-stat"><span className="sb-lbl">Est. Total</span><span className="sb-val gn">{totalParts>0?"$" + (totalParts.toLocaleString()) + "":"-"}</span></div>
       <div style={{flex:1}}/>
     </div>
     </>
   )}
 
-  {/* ── ADVISOR SCREEN ────────────────────────────────────────────── */}
+  {/* -- ADVISOR SCREEN ---------------------------------------------- */}
   {screen === "advisor" && (
     <div className="pg">
       {!s2Signed ? (
@@ -1489,7 +1489,7 @@ return (
 
           <div className="adv-cards">
             <div className="adv-stat"><div className="adv-stat-lbl">Parts Selected</div><div className="adv-stat-val" style={{color:"#ff6b35"}}>{selectedParts.length}</div></div>
-            <div className="adv-stat"><div className="adv-stat-lbl">Est. Parts Cost</div><div className="adv-stat-val" style={{color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</div></div>
+            <div className="adv-stat"><div className="adv-stat-lbl">Est. Parts Cost</div><div className="adv-stat-val" style={{color:"#4caf50"}}>{totalParts>0?"$" + (totalParts.toLocaleString()) + "":"-"}</div></div>
             <div className="adv-stat"><div className="adv-stat-lbl">Stage 1 Flags</div><div className="adv-stat-val" style={{color:"#ff9800"}}>{failCount+attnCount}</div></div>
           </div>
 
@@ -1517,7 +1517,7 @@ return (
             const isLoading = loadingTp[part.id];
             const showPart = roInfo.trans !== "CVT";
             return (
-              <div key={part.id} className={`adv-item ${isOpen?"open":""}`}>
+              <div key={part.id} className={"adv-item " + (isOpen?"open":"") + ""}>
                 <div className="adv-hdr" onClick={()=>generateTp(part)}>
                   <div className="adv-info">
                     <div className="adv-name">{part.name}</div>
@@ -1569,16 +1569,16 @@ return (
 
           <div className="total-row">
             <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a"}}>Total Parts Est.</span>
-            <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:3,color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</span>
+            <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:3,color:"#4caf50"}}>{totalParts>0?"$" + (totalParts.toLocaleString()) + "":"-"}</span>
           </div>
 
-          {/* ── PUSH TO SHOPMONKEY ── */}
+          {/* -- PUSH TO SHOPMONKEY -- */}
           <div style={{marginTop:24,background:"#1a2230",borderRadius:8,padding:20}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
               <div>
                 <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:11,letterSpacing:3,color:"#ffffff",marginBottom:3}}>PUSH TO SHOPMONKEY</div>
                 <div style={{fontSize:9,color:"#8899aa",letterSpacing:1}}>
-                  {demoMode ? "Demo mode - simulates sub-line item creation" : `Live - targeting RO ${roInfo.ro}`}
+                  {demoMode ? "Demo mode - simulates sub-line item creation" : "Live - targeting RO " + (roInfo.ro) + ""}
                 </div>
                 {targetLineId && serviceLines.length > 0 && (
                   <div style={{marginTop:6,fontSize:10,color:"#22aa55",fontWeight:600}}>
@@ -1618,7 +1618,7 @@ return (
               </div>
             </div>
 
-            {/* ── LINE PICKER (no match found) ── */}
+            {/* -- LINE PICKER (no match found) -- */}
             {showLinePicker && serviceLines.length > 0 && (
               <div style={{marginBottom:16,background:"#0d1520",borderRadius:6,padding:16,border:"2px solid #ff9800"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
@@ -1660,7 +1660,7 @@ return (
               </div>
             )}
 
-            {/* ── PUSH LOG ── */}
+            {/* -- PUSH LOG -- */}
             {pushLog.length > 0 && (
               <div style={{borderTop:"1px solid #2a3a4a",paddingTop:14}}>
                 <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#6a7a8a",marginBottom:10,fontWeight:600}}>
@@ -1668,7 +1668,7 @@ return (
                 </div>
                 <div style={{maxHeight:220,overflowY:"auto",display:"flex",flexDirection:"column",gap:5}}>
                   {pushLog.map((l,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",background:"#0d1520",borderRadius:4,borderLeft:`3px solid ${l.status==="success"?"#22aa55":"#f44336"}`}}>
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",background:"#0d1520",borderRadius:4,borderLeft:"3px solid " + (l.status==="success"?"#22aa55":"#f44336") + ""}}>
                       <span style={{fontSize:11,color:l.status==="success"?"#22aa55":"#f44336",flexShrink:0}}>{l.status==="success"?"✓":"✗"}</span>
                       <span style={{flex:1,fontSize:11,color:"#c0ccd8"}}>{l.name}</span>
                       <span style={{fontSize:9,color:"#4a5a6a",fontFamily:"'Share Tech Mono',monospace"}}>{l.id}</span>
@@ -1688,7 +1688,7 @@ return (
     </div>
   )}
 
-  {/* ── SETTINGS SCREEN ───────────────────────────────────────────── */}
+  {/* -- SETTINGS SCREEN --------------------------------------------- */}
   {screen === "settings" && (
     <div className="pg">
       <div className="section-title">Settings & Shopmonkey API</div>
@@ -1700,11 +1700,11 @@ return (
         <div style={{display:"flex",gap:8}}>
           <button
             onClick={()=>setDemoMode(true)}
-            style={{flex:1,padding:"12px",border:`2px solid ${demoMode?"#ff9800":"#d0d8e0"}`,borderRadius:5,background:demoMode?"#fff8f0":"#f5f8fb",color:demoMode?"#ff9800":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
+            style={{flex:1,padding:"12px",border:"2px solid " + (demoMode?"#ff9800":"#d0d8e0") + "",borderRadius:5,background:demoMode?"#fff8f0":"#f5f8fb",color:demoMode?"#ff9800":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
           >🔵 Demo Mode</button>
           <button
             onClick={()=>setDemoMode(false)}
-            style={{flex:1,padding:"12px",border:`2px solid ${!demoMode?"#22aa55":"#d0d8e0"}`,borderRadius:5,background:!demoMode?"#f0fff5":"#f5f8fb",color:!demoMode?"#22aa55":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
+            style={{flex:1,padding:"12px",border:"2px solid " + (!demoMode?"#22aa55":"#d0d8e0") + "",borderRadius:5,background:!demoMode?"#f0fff5":"#f5f8fb",color:!demoMode?"#22aa55":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
           >🟢 Live Mode</button>
         </div>
         {demoMode && (
@@ -1733,11 +1733,11 @@ return (
           <button
             onClick={async()=>{
               try {
-                const res = await fetch(`${relayUrl.replace(/[/]$/,"")}/health`);
+                const res = await fetch("" + (relayUrl.replace(/\/$/,"")) + "/health");
                 const d = await res.json();
-                alert(`✓ Relay connected!\n\n${JSON.stringify(d,null,2)}`);
+                alert("✓ Relay connected!\n\n" + (JSON.stringify(d,null,2)) + "");
               } catch(e) {
-                alert(`✗ Could not reach relay:\n${e.message}`);
+                alert("✗ Could not reach relay:\n" + (e.message) + "");
               }
             }}
             style={{marginTop:10,padding:"8px 16px",background:"#1a2230",border:"none",borderRadius:4,color:"#fff",fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:1,cursor:"pointer"}}
