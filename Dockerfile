@@ -9,7 +9,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-RUN npx vite build || (echo "VITE BUILD FAILED" && cat vite-error.log 2>/dev/null && exit 1)
+RUN npx vite build 2>&1
 
 EXPOSE 3000
 
