@@ -10,6 +10,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+      - name: Fix smart quotes in App.jsx
+        run: |
+          python3 -c "
+          data = open('src/App.jsx', 'rb').read()
+          data = data.replace(b'\xe2\x80\x9c', b'\"')
+          data = data.replace(b'\xe2\x80\x9d', b'\"')
+          data = data.replace(b'\xe2\x80\x98', b\"'\")
+          data = data.replace(b'\xe2\x80\x99', b\"'\")
+          data = data.replace(b'\xe2\x80\x94', b'-')
+          data = data.replace(b'\xe2\x80\x93', b'-')
+          open('src/App.jsx', 'wb').write(data)
+          print('Fixed', len(data), 'bytes')
+          "
       - run: npm install --legacy-peer-deps
       - run: npm run build
       - run: |
