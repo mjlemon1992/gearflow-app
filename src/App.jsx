@@ -913,7 +913,7 @@ const res = await fetch(“https://api.anthropic.com/v1/messages”, {
 method:“POST”, headers:{“Content-Type”:“application/json”},
 body: JSON.stringify({
 model:“claude-sonnet-4-20250514”, max_tokens:800,
-system:“You are a transmission service advisor coach. Generate brief, honest talking points for “ + roInfo.trans + “ (” + trans.make + “) rebuild parts. Plain language only. Respond ONLY with JSON: {"why":"one sentence","risk":"one sentence","pitch":"one natural advisor sentence","pair":"one sentence companion part suggestion"}”,
+system:“You are a transmission service advisor coach. Generate brief, honest talking points for “ + roInfo.trans + “ (” + trans.make + “) rebuild parts. Plain language only. Respond ONLY with JSON with keys why, risk, pitch, pair - each one sentence.”,
 messages:[{ role:“user”, content:“Part: “ + part.name + “ (” + (part.part || “no part#”) + “). Category: “ + part.category + “. “ + (price ? “Price: $” + price + “.” : “”) + “ “ + (s2Notes[part.id] ? “Tech note: “ + s2Notes[part.id] : “”) }]
 })
 });
