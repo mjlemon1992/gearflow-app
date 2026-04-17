@@ -1,6 +1,6 @@
 import { useState, useRef } from “react”;
 
-// — TRANSMISSION DATA ––––––––––––––––––––––––––––
+// ─── TRANSMISSION DATA ────────────────────────────────────────────────────────
 const TRANSMISSIONS = {
 “68RFE”: {
 label: “68RFE”, make: “Dodge/Ram”,
@@ -394,7 +394,7 @@ parts: [
 },
 };
 
-// — ADDITIONAL SERVICES ——————————————————
+// ─── ADDITIONAL SERVICES ──────────────────────────────────────────────────────
 const OTHER_SERVICES = {
 “TRANSFER_CASE”: {
 label: “Transfer Case”, make: “Various”, icon: “TC”,
@@ -443,7 +443,7 @@ parts: [
 },
 
 “DIFFERENTIAL”: {
-label: “Differential”, make: “Various”, icon: “ “,
+label: “Differential”, make: “Various”, icon: “🔧”,
 categories: {
 seals:    { label:“Bearing & Seal Kit”, color:”#f0c040” },
 gears:    { label:“Crown & Pinion”,     color:”#ff6b35” },
@@ -492,7 +492,7 @@ parts: [
 },
 
 “GENERIC_AUTO”: {
-label: “Generic Auto Trans”, make: “Various”, icon: “ “,
+label: “Generic Auto Trans”, make: “Various”, icon: “🔩”,
 categories: {
 overhaul:   { label:“Overhaul / Kits”,      color:”#ff6b35” },
 friction:   { label:“Friction & Steels”,    color:”#f0c040” },
@@ -636,7 +636,7 @@ const SERVICE_TYPE_GROUPS = [
 { label:“Manual Transmission”,     color:”#ce93d8”, keys: [“MANUAL_TRANS”] },
 ];
 
-// — REMOVAL CHECKLIST —————————————————––
+// ─── REMOVAL CHECKLIST ───────────────────────────────────────────────────────
 const REMOVAL_ITEMS = [
 { id:“ds_front”,    label:“Front Driveshaft”,           category:“driveline”, photo:false },
 { id:“ds_rear”,     label:“Rear Driveshaft”,            category:“driveline”, photo:false },
@@ -679,7 +679,7 @@ const STATUS_COLORS = { “Pass”:”#4caf50”,“Fail”:”#f44336”,“Nee
 
 const EMPTY_CUSTOM = () => ({ name:””, part:””, supplier:””, price:”” });
 
-// — DEMO RO DATA ———————————————————––
+// ─── DEMO RO DATA ─────────────────────────────────────────────────────────────
 const DEMO_ROS = {
 “RO-1001”: { vehicle:“2020 Ram 2500 6.7L Cummins”,         year:“2020”, trans:“68RFE”    },
 “RO-1002”: { vehicle:“2018 Chevrolet Silverado 1500 5.3L”, year:“2018”, trans:“6L80E”    },
@@ -694,7 +694,7 @@ const DEMO_ROS = {
 “RO-1011”: { vehicle:“2016 Jeep Wrangler 3.6L”,            year:“2016”, trans:“MANUAL_TRANS”  },
 };
 
-// — MAIN APP ––––––––––––––––––––––––––––––––
+// ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function TransmissionApp() {
 const [screen, setScreen]         = useState(“ro”);    // ro | stage1 | stage2 | advisor | settings
 const [roInfo, setRoInfo]         = useState({ ro:””, vehicle:””, year:””, trans:“68RFE” });
@@ -745,7 +745,7 @@ const [openTp, setOpenTp]         = useState(null);
 const photoRefs = useRef({});
 const trans = ALL_SERVICES[roInfo.trans] || ALL_SERVICES[“68RFE”];
 
-// – helpers –––––––––––––––––––––––––––––––
+// ── helpers ──────────────────────────────────────────────────────────────
 const setS1Item = (id, field, val) =>
 setS1Data(p => ({ …p, [id]: { …p[id], [field]: val } }));
 
@@ -760,7 +760,7 @@ return 0;
 const selectedParts = trans.parts.filter(p => s2Selected[p.id]);
 const customPartsTotal = s2Custom.reduce((s,c) => s + (parseFloat(c.price)||0), 0);
 
-// – Shopmonkey helpers ––––––––––––––––––––––––––
+// ── Shopmonkey helpers ────────────────────────────────────────────────────
 const lookupRO = async () => {
 if (!roInfo.ro) return;
 setRoLookup(“loading”);
@@ -774,7 +774,7 @@ setRoLookup(“found”);
 } else {
 try {
 setApiDebug(null);
-const base = relayUrl.replace(//$/, “”);
+const base = relayUrl.replace(/[/]$/, “”);
 const res = await fetch(`${base}/api/order/lookup?number=${encodeURIComponent(roInfo.ro)}`);
 const data = await res.json();
 setApiDebug(data);
@@ -845,7 +845,7 @@ if (demoMode) {
 
 } else {
   try {
-    const base = relayUrl.replace(/\/$/, "");
+    const base = relayUrl.replace(/[/]$/, "");
     const orderId = roInfo.orderId || roInfo.ro;
 
     // Get services via relay
@@ -932,7 +932,7 @@ pair:“Consider pairing with the matching filter or seal kit.”
 setLoadingTp(p => ({…p, [part.id]: false}));
 };
 
-// – SCREENS —————————————————————
+// ── SCREENS ───────────────────────────────────────────────────────────────
 return (
 <div style={{ fontFamily:”‘Share Tech Mono’,‘Courier New’,monospace”, background:”#e8edf2”, minHeight:“100vh”, color:”#1a2230” }}>
 <style>{`
@@ -941,7 +941,7 @@ return (
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#c0ccd8;border-radius:2px;}
 
 ```
-    /* -- BASE: light steel background, dark text -- */
+    /* ── BASE: light steel background, dark text ── */
     body{background:#e8edf2;}
 
     .hdr{background:#1a2230;border-bottom:3px solid #ff6b35;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,0.3);}
@@ -1127,11 +1127,11 @@ return (
       <button className={`nb ${screen==="stage1"?"on":""}`} onClick={()=>setScreen("stage1")} disabled={!roInfo.ro}>S1: Removal</button>
       <button className={`nb ${screen==="stage2"?"on":""}`} onClick={()=>setScreen("stage2")} disabled={!s1Signed}>S2: Strip</button>
       <button className={`nb ${screen==="advisor"?"on":""}`} onClick={()=>setScreen("advisor")} disabled={!s2Signed}>Advisor</button>
-      <button className={`nb ${screen==="settings"?"on":""}`} onClick={()=>setScreen("settings")}> </button>
+      <button className={`nb ${screen==="settings"?"on":""}`} onClick={()=>setScreen("settings")}>⚙</button>
     </div>
   </div>
 
-  {/* -- RO SCREEN --------------------------------------------------- */}
+  {/* ── RO SCREEN ─────────────────────────────────────────────────── */}
   {screen === "ro" && (
     <div className="pg">
       <div className="section-title">New Service Order</div>
@@ -1139,7 +1139,7 @@ return (
       {/* Shopmonkey RO Lookup */}
       <div style={{background:"#1a2230",borderRadius:6,padding:16,marginBottom:20}}>
         <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#8899aa",marginBottom:10,fontWeight:700}}>
-          {demoMode ? "  Demo Mode - Shopmonkey Lookup" : "  Live - Shopmonkey Lookup"}
+          {demoMode ? "🔵 Demo Mode - Shopmonkey Lookup" : "🟢 Live - Shopmonkey Lookup"}
         </div>
         <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
           <input
@@ -1154,16 +1154,16 @@ return (
             onClick={lookupRO}
             disabled={!roInfo.ro||roLookup==="loading"}
             style={{padding:"10px 18px",background:"#ff6b35",color:"#fff",border:"none",borderRadius:4,fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",flexShrink:0,opacity:(!roInfo.ro||roLookup==="loading")?0.5:1}}
-          >{roLookup==="loading"?"Searching...":"Lookup RO  "}</button>
+          >{roLookup==="loading"?"Searching...":"Lookup RO →"}</button>
         </div>
         {roLookup==="found" && (
           <div style={{marginTop:10,padding:"8px 12px",background:"#22aa5522",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:600}}>
-              Found - {roInfo.vehicle}   {roInfo.year} {roInfo.orderId && <span style={{fontSize:9,opacity:0.7}}>  ID: {roInfo.orderId}</span>}
+            ✓ Found - {roInfo.vehicle} · {roInfo.year} {roInfo.orderId && <span style={{fontSize:9,opacity:0.7}}>· ID: {roInfo.orderId}</span>}
           </div>
         )}
         {roLookup==="error" && (
           <div style={{marginTop:10,padding:"10px 12px",background:"#f4433622",border:"1px solid #f44336",borderRadius:4,fontSize:11,color:"#f44336"}}>
-            <div style={{fontWeight:700,marginBottom:6}}>  RO not found in Shopmonkey</div>
+            <div style={{fontWeight:700,marginBottom:6}}>✗ RO not found in Shopmonkey</div>
             {!demoMode && (
               <div style={{fontSize:10,color:"#ff8a80",lineHeight:1.7}}>
                 Check: your RO number in Shopmonkey may be a display number - the API filters by the <strong>number</strong> field. Try entering just the digits (e.g. <strong>10600252</strong>) without any prefix. Also confirm your API key has Work Orders read permission.
@@ -1175,7 +1175,7 @@ return (
         {/* Debug panel - shows raw API response to diagnose issues */}
         {!demoMode && apiDebug && roLookup==="error" && (
           <div style={{marginTop:10,background:"#1a2230",borderRadius:5,padding:14,border:"1px solid #2a3a4a"}}>
-            <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#ff9800",marginBottom:10,fontWeight:700}}>  API Debug Info</div>
+            <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#ff9800",marginBottom:10,fontWeight:700}}>🔍 API Debug Info</div>
             <div style={{display:"flex",flexDirection:"column",gap:6,fontFamily:"'Share Tech Mono',monospace",fontSize:10}}>
               <div style={{display:"flex",gap:8}}>
                 <span style={{color:"#4a5a6a",minWidth:100}}>HTTP Status:</span>
@@ -1254,19 +1254,19 @@ return (
       ))}
 
       <button className="go-btn" disabled={!roInfo.ro||!roInfo.vehicle} onClick={()=>setScreen("stage1")}>
-        Start Stage 1 - Removal  
+        Start Stage 1 - Removal →
       </button>
     </div>
   )}
 
-  {/* -- STAGE 1: REMOVAL -------------------------------------------- */}
+  {/* ── STAGE 1: REMOVAL ──────────────────────────────────────────── */}
   {screen === "stage1" && (
     <>
     <div className="pg">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
         <div>
           <div className="section-title" style={{marginBottom:2}}>Stage 1 - Removal Inspection</div>
-          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span></div>
+          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span></div>
         </div>
         <div className="stats-row" style={{margin:0,width:"auto"}}>
           <div className="stat-box"><div className="stat-val" style={{color:"#f44336"}}>{failCount}</div><div className="stat-lbl">Fail</div></div>
@@ -1323,7 +1323,7 @@ return (
                         <button
                           className={`photo-btn ${d.photo?"has":""}`}
                           onClick={()=>photoRefs.current[item.id]?.click()}
-                        >{d.photo?"  Photo Taken":"  Add Photo"}</button>
+                        >{d.photo?"📷 Photo Taken":"📷 Add Photo"}</button>
                       </>
                     )}
                   </div>
@@ -1356,21 +1356,21 @@ return (
           className={`sign-btn ${s1Signed?"done":""}`}
           disabled={s1Initials.length<2 || s1Signed}
           onClick={()=>{ setS1Signed(true); setScreen("stage2"); }}
-        >{s1Signed?`  Signed - ${s1Initials}`:"Sign & Advance to Strip  "}</button>
+        >{s1Signed?`✓ Signed - ${s1Initials}`:"Sign & Advance to Strip →"}</button>
       </div>
       <div style={{height:70}}/>
     </div>
     </>
   )}
 
-  {/* -- STAGE 2: STRIP DOWN ----------------------------------------- */}
+  {/* ── STAGE 2: STRIP DOWN ───────────────────────────────────────── */}
   {screen === "stage2" && (
     <>
     <div className="pg">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
         <div>
           <div className="section-title" style={{marginBottom:2}}>Stage 2 - Strip Down & Parts Selection</div>
-          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span>   S1: <span style={{color:"#00cfff"}}>{s1Initials}</span></div>
+          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span> · S1: <span style={{color:"#00cfff"}}>{s1Initials}</span></div>
         </div>
       </div>
 
@@ -1414,7 +1414,7 @@ return (
                   const showPart = roInfo.trans !== "CVT";
                   return (
                     <div key={part.id} className={`pc ${isSel?"sel":""}`} style={{"--c":catInfo.color}} onClick={()=>togglePart(part.id)}>
-                      {isSel && <div className="chk"> </div>}
+                      {isSel && <div className="chk">✓</div>}
                       <div className="pc-name">{part.name}</div>
                       {showPart && part.part && part.part !== "-" && <div className="pc-num">{part.part}</div>}
                       {showPart && part.supplier && part.supplier !== "-" && <span className="pc-sup">{part.supplier}</span>}
@@ -1458,7 +1458,7 @@ return (
           className={`sign-btn ${s2Signed?"done":""}`}
           disabled={s2Initials.length<2 || s2Signed || selectedParts.length===0}
           onClick={()=>{ setS2Signed(true); setScreen("advisor"); }}
-        >{s2Signed?`  Approved - ${s2Initials}`:"Approve & Send to Advisor  "}</button>
+        >{s2Signed?`✓ Approved - ${s2Initials}`:"Approve & Send to Advisor →"}</button>
       </div>
       <div style={{height:70}}/>
     </div>
@@ -1471,19 +1471,19 @@ return (
     </>
   )}
 
-  {/* -- ADVISOR SCREEN ---------------------------------------------- */}
+  {/* ── ADVISOR SCREEN ────────────────────────────────────────────── */}
   {screen === "advisor" && (
     <div className="pg">
       {!s2Signed ? (
-        <div className="empty"><div className="empty-ico"> </div><div className="empty-txt">Awaiting Stage 2 lead tech approval.</div></div>
+        <div className="empty"><div className="empty-ico">🔒</div><div className="empty-txt">Awaiting Stage 2 lead tech approval.</div></div>
       ) : (
         <>
           <div style={{marginBottom:16}}>
             <div className="section-title" style={{marginBottom:2}}>Advisor Quote Sheet</div>
             <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>
-              {roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span>
-              {" "}  S1: <span style={{color:"#00cfff"}}>{s1Initials}</span>
-              {" "}  S2: <span style={{color:"#4caf50"}}>{s2Initials}</span>
+              {roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span>
+              {" "}· S1: <span style={{color:"#00cfff"}}>{s1Initials}</span>
+              {" "}· S2: <span style={{color:"#4caf50"}}>{s2Initials}</span>
             </div>
           </div>
 
@@ -1522,10 +1522,10 @@ return (
                   <div className="adv-info">
                     <div className="adv-name">{part.name}</div>
                     <div className="adv-sub" style={{color:cat?.color}}>{cat?.label}</div>
-                    {showPart && part.part && part.part!=="-" && <div className="adv-num">{part.part}   {part.supplier}</div>}
+                    {showPart && part.part && part.part!=="-" && <div className="adv-num">{part.part} · {part.supplier}</div>}
                   </div>
                   {price>0 && <div className="adv-price">${price.toLocaleString()}</div>}
-                  <div className="adv-arr"> </div>
+                  <div className="adv-arr">▶</div>
                 </div>
                 {isOpen && (
                   <div className="tp-wrap">
@@ -1534,14 +1534,14 @@ return (
                     ) : tp ? (
                       <>
                         <div className="tp-pitch">
-                          <div className="tp-pitch-lbl">  Say This</div>
+                          <div className="tp-pitch-lbl">💬 Say This</div>
                           <div className="tp-pitch-txt">"{tp.pitch}"</div>
                         </div>
                         <div className="tp-row">
                           <div className="tp-c"><div className="tp-cl">Why It Matters</div><div className="tp-ct">{tp.why}</div></div>
                           <div className="tp-c"><div className="tp-cl">Risk of Skipping</div><div className="tp-ct">{tp.risk}</div></div>
                         </div>
-                        <div className="tp-pair"><div className="tp-cl">  Pair With</div><div className="tp-ct">{tp.pair}</div></div>
+                        <div className="tp-pair"><div className="tp-cl">💡 Pair With</div><div className="tp-ct">{tp.pair}</div></div>
                         {s2Notes[part.id] && <div className="tp-tech-note">Lead tech note: {s2Notes[part.id]}</div>}
                       </>
                     ) : null}
@@ -1572,7 +1572,7 @@ return (
             <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:3,color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</span>
           </div>
 
-          {/* -- PUSH TO SHOPMONKEY -- */}
+          {/* ── PUSH TO SHOPMONKEY ── */}
           <div style={{marginTop:24,background:"#1a2230",borderRadius:8,padding:20}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
               <div>
@@ -1582,7 +1582,7 @@ return (
                 </div>
                 {targetLineId && serviceLines.length > 0 && (
                   <div style={{marginTop:6,fontSize:10,color:"#22aa55",fontWeight:600}}>
-                      Target line: {serviceLines.find(l=>l.id===targetLineId)?.name}
+                    ✓ Target line: {serviceLines.find(l=>l.id===targetLineId)?.name}
                   </div>
                 )}
                 {!targetLineId && (
@@ -1610,19 +1610,19 @@ return (
                     opacity:(pushState==="loading")?0.7:1
                   }}
                 >
-                  {pushState==="idle"&&"Push to Work Order  "}
+                  {pushState==="idle"&&"Push to Work Order →"}
                   {pushState==="loading"&&"Pushing..."}
-                  {pushState==="success"&&"  Added to Work Order"}
-                  {pushState==="error"&&"  Some Items Failed"}
+                  {pushState==="success"&&"✓ Added to Work Order"}
+                  {pushState==="error"&&"⚠ Some Items Failed"}
                 </button>
               </div>
             </div>
 
-            {/* -- LINE PICKER (no match found) -- */}
+            {/* ── LINE PICKER (no match found) ── */}
             {showLinePicker && serviceLines.length > 0 && (
               <div style={{marginBottom:16,background:"#0d1520",borderRadius:6,padding:16,border:"2px solid #ff9800"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                  <span style={{fontSize:16}}>{" "}</span>
+                  <span style={{fontSize:16}}>{"⚠"}</span>
                   <div>
                     <div style={{fontSize:11,color:"#ff9800",fontWeight:700,marginBottom:2}}>No matching service line found</div>
                     <div style={{fontSize:10,color:"#6a7a8a"}}>No line contains "overhaul" or "installation of transmission". Select the correct line below:</div>
@@ -1649,7 +1649,7 @@ return (
                       {line.labor > 0 && (
                         <div style={{fontSize:12,color:"#7a8a9a",fontFamily:"'Orbitron',sans-serif",flexShrink:0}}>${line.labor.toLocaleString()}</div>
                       )}
-                      <div style={{fontSize:12,color:"#3a4a5a",flexShrink:0}}> </div>
+                      <div style={{fontSize:12,color:"#3a4a5a",flexShrink:0}}>→</div>
                     </button>
                   ))}
                 </div>
@@ -1660,7 +1660,7 @@ return (
               </div>
             )}
 
-            {/* -- PUSH LOG -- */}
+            {/* ── PUSH LOG ── */}
             {pushLog.length > 0 && (
               <div style={{borderTop:"1px solid #2a3a4a",paddingTop:14}}>
                 <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#6a7a8a",marginBottom:10,fontWeight:600}}>
@@ -1669,7 +1669,7 @@ return (
                 <div style={{maxHeight:220,overflowY:"auto",display:"flex",flexDirection:"column",gap:5}}>
                   {pushLog.map((l,i)=>(
                     <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",background:"#0d1520",borderRadius:4,borderLeft:`3px solid ${l.status==="success"?"#22aa55":"#f44336"}`}}>
-                      <span style={{fontSize:11,color:l.status==="success"?"#22aa55":"#f44336",flexShrink:0}}>{l.status==="success"?" ":" "}</span>
+                      <span style={{fontSize:11,color:l.status==="success"?"#22aa55":"#f44336",flexShrink:0}}>{l.status==="success"?"✓":"✗"}</span>
                       <span style={{flex:1,fontSize:11,color:"#c0ccd8"}}>{l.name}</span>
                       <span style={{fontSize:9,color:"#4a5a6a",fontFamily:"'Share Tech Mono',monospace"}}>{l.id}</span>
                     </div>
@@ -1677,7 +1677,7 @@ return (
                 </div>
                 {pushState==="success" && (
                   <div style={{marginTop:12,padding:"10px 14px",background:"#22aa5522",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:700,textAlign:"center"}}>
-                      {pushLog.length} part{pushLog.length!==1?"s":""} added as sub-line items under "{pushLog[0]?.line}" in {demoMode?"demo ":""}Shopmonkey
+                    ✓ {pushLog.length} part{pushLog.length!==1?"s":""} added as sub-line items under "{pushLog[0]?.line}" in {demoMode?"demo ":""}Shopmonkey
                   </div>
                 )}
               </div>
@@ -1688,7 +1688,7 @@ return (
     </div>
   )}
 
-  {/* -- SETTINGS SCREEN --------------------------------------------- */}
+  {/* ── SETTINGS SCREEN ───────────────────────────────────────────── */}
   {screen === "settings" && (
     <div className="pg">
       <div className="section-title">Settings & Shopmonkey API</div>
@@ -1701,11 +1701,11 @@ return (
           <button
             onClick={()=>setDemoMode(true)}
             style={{flex:1,padding:"12px",border:`2px solid ${demoMode?"#ff9800":"#d0d8e0"}`,borderRadius:5,background:demoMode?"#fff8f0":"#f5f8fb",color:demoMode?"#ff9800":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
-          >  Demo Mode</button>
+          >🔵 Demo Mode</button>
           <button
             onClick={()=>setDemoMode(false)}
             style={{flex:1,padding:"12px",border:`2px solid ${!demoMode?"#22aa55":"#d0d8e0"}`,borderRadius:5,background:!demoMode?"#f0fff5":"#f5f8fb",color:!demoMode?"#22aa55":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
-          >  Live Mode</button>
+          >🟢 Live Mode</button>
         </div>
         {demoMode && (
           <div style={{marginTop:12,padding:"10px 14px",background:"#fff8f0",border:"1px solid #ffcc80",borderRadius:4,fontSize:11,color:"#e65100"}}>
@@ -1733,15 +1733,15 @@ return (
           <button
             onClick={async()=>{
               try {
-                const res = await fetch(`${relayUrl.replace(/\/$/,"")}/health`);
+                const res = await fetch(`${relayUrl.replace(/[/]$/,"")}/health`);
                 const d = await res.json();
-                alert(`  Relay connected!\n\n${JSON.stringify(d,null,2)}`);
+                alert(`✓ Relay connected!\n\n${JSON.stringify(d,null,2)}`);
               } catch(e) {
-                alert(`  Could not reach relay:\n${e.message}`);
+                alert(`✗ Could not reach relay:\n${e.message}`);
               }
             }}
             style={{marginTop:10,padding:"8px 16px",background:"#1a2230",border:"none",borderRadius:4,color:"#fff",fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:1,cursor:"pointer"}}
-          >Test Connection  </button>
+          >Test Connection →</button>
         )}
       </div>
 
@@ -1749,7 +1749,7 @@ return (
       <div style={{background:"#ffffff",border:"2px solid #d0d8e0",borderRadius:8,padding:20,marginBottom:16,boxShadow:"0 1px 4px rgba(0,0,0,0.07)"}}>
         <div style={{fontSize:11,fontWeight:700,color:"#1a2230",marginBottom:4,letterSpacing:1}}>Shopmonkey API Key</div>
         <div style={{fontSize:11,color:"#7a8a9a",marginBottom:16}}>
-          Required for live mode. Create a restricted key in Shopmonkey   Settings   Integrations   API with <strong>Work Orders (read)</strong> and <strong>Line Items (write)</strong> permissions only.
+          Required for live mode. Create a restricted key in Shopmonkey → Settings → Integrations → API with <strong>Work Orders (read)</strong> and <strong>Line Items (write)</strong> permissions only.
         </div>
         <div className="fld">
           <label className="flbl">API Key</label>
@@ -1763,7 +1763,7 @@ return (
         </div>
         {apiKey && (
           <div style={{marginTop:10,padding:"8px 12px",background:"#f0fff5",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:600}}>
-              API key saved - switch to Live Mode to activate
+            ✓ API key saved - switch to Live Mode to activate
           </div>
         )}
       </div>
