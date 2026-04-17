@@ -11,10 +11,11 @@ COPY index.html ./
 COPY vite.config.js ./
 COPY src ./src
 
-RUN ls -la && ls -la src/
+RUN ls -la src/
 
-RUN npx vite build 2>&1
+RUN node_modules/.bin/vite build --debug 2>&1; echo "Exit code: $?"
 
 EXPOSE 3000
 
+COPY server.js ./
 CMD ["node", "server.js"]
