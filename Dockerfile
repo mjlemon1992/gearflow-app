@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json ./
 COPY .npmrc ./
 
-RUN npm install --legacy-peer-deps --ignore-scripts
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
