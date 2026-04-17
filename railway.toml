@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npm run build && npm install -g serve"
+buildCommand = "cd /app && npm ci && npm run build && npm install -g serve"
 
 [deploy]
 startCommand = "serve -s /app/build -l $PORT"
