@@ -17,9 +17,7 @@ RUN python3 -c "data=open('src/App.jsx','rb').read();data=data.replace(b'\xe2\x8
 
 RUN echo 'import React from "react"; import ReactDOM from "react-dom/client"; import App from "./App.jsx"; ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));' > src/index.jsx
 
-RUN node_modules/.bin/vite build 2>&1
-
-RUN ls -la build/
+RUN node_modules/.bin/vite build > /tmp/vite.log 2>&1; cat /tmp/vite.log; test -d build
 
 COPY server.js ./
 EXPOSE 3000
