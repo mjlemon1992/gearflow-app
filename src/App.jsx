@@ -1,6 +1,6 @@
 import { useState, useRef } from “react”;
 
-// ─── TRANSMISSION DATA ────────────────────────────────────────────────────────
+// — TRANSMISSION DATA ––––––––––––––––––––––––––––
 const TRANSMISSIONS = {
 “68RFE”: {
 label: “68RFE”, make: “Dodge/Ram”,
@@ -21,19 +21,19 @@ parts: [
 { id:“68_frict_bw”,  name:“Friction Module Borg Warner”,     part:“72119A”,         supplier:“KING”,   category:“friction”,  price:null },
 { id:“68_alto_g3”,   name:“Power Pack Clutch Kit Alto G3”,   part:“72101CAHPPK-1”,  supplier:“KING”,   category:“friction”,  price:null },
 { id:“68_hd_od_ud”,  name:“HD Friction Module Alto OD/UD”,   part:“A72102AAHPK”,    supplier:“KING”,   category:“friction”,  price:null },
-{ id:“68_steel”,     name:“Steel Module”,                    part:”—”,              supplier:”—”,      category:“friction”,  price:null },
-{ id:“68_misc_pp”,   name:“Misc Pressure Plate”,             part:”—”,              supplier:”—”,      category:“friction”,  price:null },
-{ id:“68_od_rev”,    name:“OD-REV Pressure Plate Modified”,  part:“Modified”,       supplier:”—”,      category:“friction”,  price:30   },
+{ id:“68_steel”,     name:“Steel Module”,                    part:”-”,              supplier:”-”,      category:“friction”,  price:null },
+{ id:“68_misc_pp”,   name:“Misc Pressure Plate”,             part:”-”,              supplier:”-”,      category:“friction”,  price:null },
+{ id:“68_od_rev”,    name:“OD-REV Pressure Plate Modified”,  part:“Modified”,       supplier:”-”,      category:“friction”,  price:30   },
 { id:“68_sol19”,     name:“Solenoid Body 2019+”,             part:“72720B”,         supplier:“KING”,   category:“electrical”,price:null },
 { id:“68_sol_grey”,  name:“Solenoid Body Grey”,              part:“D72420B”,        supplier:“KING”,   category:“electrical”,price:null },
 { id:“68_transducer”,name:“Transducer Mopar”,                part:“D72415”,         supplier:“KING”,   category:“electrical”,price:null },
-{ id:“68_tcc”,       name:“OS TCC Switch Valve”,             part:“44912-08K”,      supplier:”—”,      category:“electrical”,price:null },
+{ id:“68_tcc”,       name:“OS TCC Switch Valve”,             part:“44912-08K”,      supplier:”-”,      category:“electrical”,price:null },
 { id:“68_pump_bg”,   name:“Pump Body and Gears”,             part:“DR72500C”,       supplier:“KING”,   category:“pump”,      price:null },
 { id:“68_pump_gs”,   name:“Pump Gear Set”,                   part:“A72530B”,        supplier:“KING”,   category:“pump”,      price:null },
-{ id:“68_pump_core”, name:“Pump Core (if unrepairable)”,     part:”—”,              supplier:”—”,      category:“pump”,      price:300  },
+{ id:“68_pump_core”, name:“Pump Core (if unrepairable)”,     part:”-”,              supplier:”-”,      category:“pump”,      price:300  },
 { id:“68_sep_plate”, name:“High Pressure Separator Plate”,   part:“A72747BA-MOD”,   supplier:“PARTS4”, category:“valvebody”, price:null },
 { id:“68_billet_ch”, name:“Billet Channel Plate”,            part:“R72741CHP”,      supplier:“PARTS4”, category:“valvebody”, price:null },
-{ id:“68_od_snap”,   name:“OD Snap Ring Tapered”,            part:”—”,              supplier:”—”,      category:“valvebody”, price:null },
+{ id:“68_od_snap”,   name:“OD Snap Ring Tapered”,            part:”-”,              supplier:”-”,      category:“valvebody”, price:null },
 { id:“68_pan_flt”,   name:“Pan Filter”,                      part:“A72010BA”,       supplier:“KING”,   category:“filter”,    price:null },
 { id:“68_spin_flt”,  name:“Filter Spin-On”,                  part:“72013A”,         supplier:“KING”,   category:“filter”,    price:null },
 { id:“68_pan_drip”,  name:“Pan with Drip Plug”,              part:“A72765AA-Q”,     supplier:“KING”,   category:“filter”,    price:null },
@@ -59,7 +59,7 @@ parts: [
 { id:“6l_bushing”,    name:“Bushing Kit”,                     part:“DB104030A”,     supplier:“KING”,            category:“overhaul”,  price:null },
 { id:“6l_surecure”,   name:“Surecure Kit”,                    part:“S104174A”,      supplier:“KING”,            category:“overhaul”,  price:null },
 { id:“6l_bellhousing”,name:“Bell Housing”,                    part:“R104750CB”,     supplier:“KING”,            category:“hardparts”, price:null },
-{ id:“6l_stator”,     name:“Machine Stator”,                  part:”—”,             supplier:“Parkland Machine”,category:“hardparts”, price:150  },
+{ id:“6l_stator”,     name:“Machine Stator”,                  part:”-”,             supplier:“Parkland Machine”,category:“hardparts”, price:150  },
 { id:“6l_piston”,     name:“Piston Kit”,                      part:“D104960K”,      supplier:“KING”,            category:“overhaul”,  price:null },
 { id:“6l_techm”,      name:“TECHM”,                           part:“CS104420C”,     supplier:“KING”,            category:“electrical”,price:null },
 { id:“6l_low_sprag”,  name:“Low Sprag”,                       part:“A104654”,       supplier:“KING”,            category:“hardparts”, price:null },
@@ -90,12 +90,12 @@ parts: [
 { id:“10r_bushing”,   name:“Bushing Kit”,                     part:“105030”,        supplier:“KING”,      category:“overhaul”,  price:null },
 { id:“10r_input”,     name:“Input Shaft”,                     part:“HL3Z7015C”,     supplier:“Cam Clarke”,category:“hardparts”, price:null },
 { id:“10r_cdf_drum”,  name:“CDF Drum”,                        part:“JL3Z7H351B”,    supplier:“Cam Clarke”,category:“hardparts”, price:null },
-{ id:“10r_sun_gear”,  name:”#3 Sun Gear Shaft (C Clutch Hub)”,part:”—”,             supplier:”—”,         category:“hardparts”, price:null },
+{ id:“10r_sun_gear”,  name:”#3 Sun Gear Shaft (C Clutch Hub)”,part:”-”,             supplier:”-”,         category:“hardparts”, price:null },
 { id:“10r_filter”,    name:“Filter”,                          part:“A105010A”,      supplier:“KING”,      category:“filter”,    price:null },
 { id:“10r_ss_filter”, name:“Stop Start Filter”,               part:“1050014”,       supplier:“KING”,      category:“filter”,    price:null },
 { id:“10r_converter”, name:“Converter”,                       part:“FM140A”,        supplier:“PARTS”,     category:“hardparts”, price:null },
 { id:“10r_f_steels”,  name:“F-Clutch Steels”,                 part:“D105126A”,      supplier:“KING”,      category:“friction”,  price:null },
-{ id:“10r_press_pl”,  name:“Pressure Plate”,                  part:”—”,             supplier:”—”,         category:“friction”,  price:null },
+{ id:“10r_press_pl”,  name:“Pressure Plate”,                  part:”-”,             supplier:”-”,         category:“friction”,  price:null },
 { id:“10r_anod_cyl”,  name:“Anodized Cylinder”,               part:“PC3Z7B177A”,    supplier:“Cam Clarke”,category:“hardparts”, price:null },
 { id:“10r_frict_mod”, name:“10R80 Upgraded Friction Module”,  part:“105119AB”,      supplier:“Cam Clarke”,category:“friction”,  price:null },
 { id:“10r_f_bal_pis”, name:“F Clutch Balance Piston”,         part:“HL3Z7H360F”,    supplier:“Cam Clarke”,category:“hardparts”, price:null },
@@ -114,22 +114,22 @@ filter:    { label:“Filter”,            color:”#80cbc4” },
 parts: [
 { id:“6r_mast_d”,    name:“Master Kit No Steels/Pistons Diesel”,part:“126004BD”,    supplier:“KING”,      category:“overhaul”,  price:null },
 { id:“6r_mast_g”,    name:“Master Kit No Steels/Pistons Gas”,   part:“126004BG”,    supplier:“KING”,      category:“overhaul”,  price:null },
-{ id:“6r_banner”,    name:“HD Banner Kit”,                       part:”—”,           supplier:”—”,         category:“overhaul”,  price:null },
+{ id:“6r_banner”,    name:“HD Banner Kit”,                       part:”-”,           supplier:”-”,         category:“overhaul”,  price:null },
 { id:“6r_vb”,        name:“Valve Body”,                          part:“HC3Z7A100B”,  supplier:“Cam Clarke”,category:“electrical”,price:null },
 { id:“6r_bushing”,   name:“Bushing Kit”,                         part:“236030”,      supplier:“KING”,      category:“overhaul”,  price:null },
 { id:“6r_pump_bear”, name:“Pump Bearing”,                        part:“S126209”,     supplier:“KING”,      category:“pump”,      price:null },
 { id:“6r_inp_drum”,  name:“Input Drum/Shaft”,                    part:“BC3Z-7F207-C”,supplier:“Cam Clarke”,category:“hardparts”, price:null },
 { id:“6r_converter”, name:“Converter”,                           part:“FM46”,        supplier:“PARTS4”,    category:“hardparts”, price:null },
-{ id:“6r_cent_supp”, name:“Center Support Kit (Ford)”,           part:”—”,           supplier:”—”,         category:“hardparts”, price:null },
+{ id:“6r_cent_supp”, name:“Center Support Kit (Ford)”,           part:”-”,           supplier:”-”,         category:“hardparts”, price:null },
 { id:“6r_pump”,      name:“Pump Without PTO”,                    part:“D126500”,     supplier:“KING”,      category:“pump”,      price:null },
 { id:“6r_dir_pis”,   name:“Direct Piston Aluminum (Ford)”,       part:“BC3Z7A262B”,  supplier:“Cam Clarke”,category:“friction”,  price:null },
-{ id:“6r_misc_pp”,   name:“Misc Pressure Plates”,                part:”—”,           supplier:”—”,         category:“friction”,  price:null },
+{ id:“6r_misc_pp”,   name:“Misc Pressure Plates”,                part:”-”,           supplier:”-”,         category:“friction”,  price:null },
 { id:“6r_steel_d”,   name:“Steel Module Diesel”,                 part:“126139B”,     supplier:“KING”,      category:“friction”,  price:null },
 { id:“6r_steel_g”,   name:“Steel Module Gas”,                    part:“126139A”,     supplier:“KING”,      category:“friction”,  price:null },
-{ id:“6r_snap”,      name:“Snap Rings”,                          part:”—”,           supplier:”—”,         category:“hardparts”, price:null },
+{ id:“6r_snap”,      name:“Snap Rings”,                          part:”-”,           supplier:”-”,         category:“hardparts”, price:null },
 { id:“6r_filter”,    name:“Filter”,                              part:“A126010”,     supplier:“KING”,      category:“filter”,    price:null },
 { id:“6r_od_piston”, name:“Overdrive Piston (Moulded)”,          part:“126960”,      supplier:“KING”,      category:“friction”,  price:null },
-{ id:“6r_harness”,   name:“Harness”,                             part:”—”,           supplier:”—”,         category:“electrical”,price:null },
+{ id:“6r_harness”,   name:“Harness”,                             part:”-”,           supplier:”-”,         category:“electrical”,price:null },
 { id:“6r_od_steels”, name:“Overdrive Steels”,                    part:“126120”,      supplier:“KING”,      category:“friction”,  price:null },
 { id:“6r_oil_seal”,  name:“Oil Filter Housing Seal to Block”,    part:“BC3Z6840A”,   supplier:“Cam Clarke”,category:“overhaul”,  price:null },
 ]
@@ -232,7 +232,7 @@ parts: [
 { id:“48_converter”, name:“Torque Converter”,                   part:“C50HD”,        supplier:“PARTS”,  category:“hardparts”, price:null },
 { id:“48_lu_od_sol”, name:“Lockup/Overdrive Solenoid”,          part:“12420C”,       supplier:“KING”,   category:“electrical”,price:null },
 { id:“48_inp_sun”,   name:“Input Sun Gear”,                     part:“A22612B”,      supplier:“KING”,   category:“hardparts”, price:null },
-{ id:“48_sunshell”,  name:“Sunshell”,                           part:”—”,            supplier:”—”,      category:“hardparts”, price:null },
+{ id:“48_sunshell”,  name:“Sunshell”,                           part:”-”,            supplier:”-”,      category:“hardparts”, price:null },
 { id:“48_ext_shim”,  name:“Extension Housing Shim”,             part:“A22273”,       supplier:“KING”,   category:“overhaul”,  price:null },
 { id:“48_ext_hous”,  name:“Extension Housing”,                  part:“A22770GA”,     supplier:“KING”,   category:“hardparts”, price:null },
 { id:“48_out_shim”,  name:“Output Shaft Shim”,                  part:“D12215C”,      supplier:“KING”,   category:“overhaul”,  price:null },
@@ -240,7 +240,7 @@ parts: [
 { id:“48_6_dir_fr”,  name:“6-Direct Frictions”,                 part:“22106B”,       supplier:“KING”,   category:“friction”,  price:null },
 { id:“48_band_arm”,  name:“4.2 Band Arm”,                       part:“146900”,       supplier:“TCS”,    category:“friction”,  price:null },
 { id:“48_low_roll”,  name:“Low Roller”,                         part:“22654A”,       supplier:“KING”,   category:“hardparts”, price:null },
-{ id:“48_press_pl”,  name:“Pressure Plate”,                     part:”—”,            supplier:”—”,      category:“friction”,  price:null },
+{ id:“48_press_pl”,  name:“Pressure Plate”,                     part:”-”,            supplier:”-”,      category:“friction”,  price:null },
 { id:“48_od_wave”,   name:“Overdrive Wave Snap Ring”,           part:“D12864”,       supplier:“KING”,   category:“overhaul”,  price:null },
 ]
 },
@@ -268,7 +268,7 @@ parts: [
 { id:“66_steel”,     name:“Steel Module”,                       part:“72139”,        supplier:“KING”,   category:“overhaul”,  price:null },
 { id:“66_od_rev”,    name:“OD-REV Pressure Plate Machined”,     part:“D72140A”,      supplier:“KING”,   category:“overhaul”,  price:30   },
 { id:“66_low_sprag”, name:“Low Sprag”,                          part:“A72654”,       supplier:“KING”,   category:“hardparts”, price:null },
-{ id:“66_misc_pp”,   name:“Misc Pressure Plates”,               part:”—”,            supplier:”—”,      category:“overhaul”,  price:null },
+{ id:“66_misc_pp”,   name:“Misc Pressure Plates”,               part:”-”,            supplier:”-”,      category:“overhaul”,  price:null },
 { id:“66_od_snap”,   name:“OD Snap Ring (Tapered)”,             part:“D72860”,       supplier:“KING”,   category:“hardparts”, price:null },
 ]
 },
@@ -281,26 +281,26 @@ hardparts: { label:“Hard Parts”,        color:”#ff8a65” },
 valvebody: { label:“Valve Body”,        color:”#ce93d8” },
 },
 parts: [
-{ id:“62_master”,    name:“Master Kit Mopar”,                   part:“D132004”,      supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_os_prv”,    name:“OS Pressure Regulator Valve”,        part:“92835-29”,     supplier:”—”,      category:“valvebody”, price:null },
-{ id:“62_tcc_kit”,   name:“TCC Control/Plunger Kit”,            part:“92835-03K”,    supplier:”—”,      category:“valvebody”, price:null },
-{ id:“62_os_sw_vv”,  name:“Oversized Switch Valve”,             part:“92835-32K”,    supplier:”—”,      category:“valvebody”, price:null },
-{ id:“62_dir_drum”,  name:“Direct Drum”,                        part:“A132555”,      supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_front_plan”,name:“Front Planetary 4-Pinion”,           part:“D162582”,      supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_bushing”,   name:“Bushing Kit”,                        part:“DB132030”,     supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_torr_brg”,  name:“Torrington Bearing Kit”,             part:“92201A”,       supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_sol_body”,  name:“Solenoid Body”,                      part:“D132420”,      supplier:”—”,      category:“electrical”,price:null },
-{ id:“62_lu_sol”,    name:“Lockup Solenoid”,                    part:“D132425”,      supplier:”—”,      category:“electrical”,price:null },
-{ id:“62_transducer”,name:“Transducer”,                         part:“D132435”,      supplier:”—”,      category:“electrical”,price:null },
+{ id:“62_master”,    name:“Master Kit Mopar”,                   part:“D132004”,      supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_os_prv”,    name:“OS Pressure Regulator Valve”,        part:“92835-29”,     supplier:”-”,      category:“valvebody”, price:null },
+{ id:“62_tcc_kit”,   name:“TCC Control/Plunger Kit”,            part:“92835-03K”,    supplier:”-”,      category:“valvebody”, price:null },
+{ id:“62_os_sw_vv”,  name:“Oversized Switch Valve”,             part:“92835-32K”,    supplier:”-”,      category:“valvebody”, price:null },
+{ id:“62_dir_drum”,  name:“Direct Drum”,                        part:“A132555”,      supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_front_plan”,name:“Front Planetary 4-Pinion”,           part:“D162582”,      supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_bushing”,   name:“Bushing Kit”,                        part:“DB132030”,     supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_torr_brg”,  name:“Torrington Bearing Kit”,             part:“92201A”,       supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_sol_body”,  name:“Solenoid Body”,                      part:“D132420”,      supplier:”-”,      category:“electrical”,price:null },
+{ id:“62_lu_sol”,    name:“Lockup Solenoid”,                    part:“D132425”,      supplier:”-”,      category:“electrical”,price:null },
+{ id:“62_transducer”,name:“Transducer”,                         part:“D132435”,      supplier:”-”,      category:“electrical”,price:null },
 { id:“62_converter”, name:“Torque Converter”,                   part:“OM26”,         supplier:“PARTS4”, category:“hardparts”, price:null },
-{ id:“62_rear_sun”,  name:“Rear Sun Gear”,                      part:”—”,            supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_inp_drum”,  name:“Input Drum”,                         part:“92574A”,       supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_trf_brgs”,  name:“Transfer Gear Bearings”,             part:”—”,            supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_spider_w”,  name:“2-Spider Gear Washers”,              part:“05078881AA”,   supplier:”—”,      category:“hardparts”, price:null },
-{ id:“62_misc_wash”, name:“Misc Washers”,                       part:”—”,            supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_man_bush”,  name:“Manual Shaft Bushing”,               part:“262991-04K”,   supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_steel”,     name:“Steel Module”,                       part:”—”,            supplier:”—”,      category:“overhaul”,  price:null },
-{ id:“62_sprag”,     name:“Sprag”,                              part:“A132642”,      supplier:”—”,      category:“hardparts”, price:null },
+{ id:“62_rear_sun”,  name:“Rear Sun Gear”,                      part:”-”,            supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_inp_drum”,  name:“Input Drum”,                         part:“92574A”,       supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_trf_brgs”,  name:“Transfer Gear Bearings”,             part:”-”,            supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_spider_w”,  name:“2-Spider Gear Washers”,              part:“05078881AA”,   supplier:”-”,      category:“hardparts”, price:null },
+{ id:“62_misc_wash”, name:“Misc Washers”,                       part:”-”,            supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_man_bush”,  name:“Manual Shaft Bushing”,               part:“262991-04K”,   supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_steel”,     name:“Steel Module”,                       part:”-”,            supplier:”-”,      category:“overhaul”,  price:null },
+{ id:“62_sprag”,     name:“Sprag”,                              part:“A132642”,      supplier:”-”,      category:“hardparts”, price:null },
 ]
 },
 “545_65RFE”: {
@@ -359,7 +359,7 @@ parts: [
 { id:“4l60_rev_drum”, name:“Reverse Input Drum”,                part:“A74556B”,      supplier:“KING”,   category:“hardparts”, price:null },
 { id:“4l60_psm”,      name:“Pressure Switch Manifold”,          part:“74442”,        supplier:“KING”,   category:“electrical”,price:null },
 { id:“4l60_front_sun”,name:“Front Sun Gear”,                    part:“A74612A”,      supplier:“KING”,   category:“hardparts”, price:null },
-{ id:“4l60_sprag_r”,  name:“Sprag Races”,                       part:”—”,            supplier:”—”,      category:“hardparts”, price:null },
+{ id:“4l60_sprag_r”,  name:“Sprag Races”,                       part:”-”,            supplier:”-”,      category:“hardparts”, price:null },
 { id:“4l60_steel”,    name:“Steel Module”,                      part:“74139B”,       supplier:“KING”,   category:“friction”,  price:null },
 { id:“4l60_34_spr”,   name:“3-4 Load Springs”,                  part:“D73970”,       supplier:“KING”,   category:“hardparts”, price:null },
 { id:“4l60_34_plug”,  name:“3-4 Relay O-Ring End Plug”,         part:“S74741EC-6”,   supplier:“KING”,   category:“hardparts”, price:null },
@@ -394,7 +394,7 @@ parts: [
 },
 };
 
-// ─── ADDITIONAL SERVICES ──────────────────────────────────────────────────────
+// — ADDITIONAL SERVICES ——————————————————
 const OTHER_SERVICES = {
 “TRANSFER_CASE”: {
 label: “Transfer Case”, make: “Various”, icon: “TC”,
@@ -406,44 +406,44 @@ other:     { label:“Other”,               color:”#80cbc4” },
 },
 parts: [
 // Bearing & Seal Kit
-{ id:“tc_seal_kit”,    name:“Bearing & Seal Kit (Complete)”,    part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_front_seal”,  name:“Front Input Seal”,                 part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_rear_seal”,   name:“Rear Output Seal”,                 part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_side_seal”,   name:“Side Yoke Seal”,                   part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_front_brg”,   name:“Front Input Bearing”,              part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_rear_brg”,    name:“Rear Output Bearing”,              part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_pump_brg”,    name:“Pump Bearing”,                     part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_gasket_set”,  name:“Gasket Set”,                       part:”—”, supplier:”—”, category:“seals”,     price:null },
-{ id:“tc_oring_kit”,   name:“O-Ring Kit”,                       part:”—”, supplier:”—”, category:“seals”,     price:null },
+{ id:“tc_seal_kit”,    name:“Bearing & Seal Kit (Complete)”,    part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_front_seal”,  name:“Front Input Seal”,                 part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_rear_seal”,   name:“Rear Output Seal”,                 part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_side_seal”,   name:“Side Yoke Seal”,                   part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_front_brg”,   name:“Front Input Bearing”,              part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_rear_brg”,    name:“Rear Output Bearing”,              part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_pump_brg”,    name:“Pump Bearing”,                     part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_gasket_set”,  name:“Gasket Set”,                       part:”-”, supplier:”-”, category:“seals”,     price:null },
+{ id:“tc_oring_kit”,   name:“O-Ring Kit”,                       part:”-”, supplier:”-”, category:“seals”,     price:null },
 // Chain & Sprockets
-{ id:“tc_chain”,       name:“Transfer Case Chain”,              part:”—”, supplier:”—”, category:“chain”,     price:null },
-{ id:“tc_drive_spkt”,  name:“Drive Sprocket”,                   part:”—”, supplier:”—”, category:“chain”,     price:null },
-{ id:“tc_driven_spkt”, name:“Driven Sprocket”,                  part:”—”, supplier:”—”, category:“chain”,     price:null },
-{ id:“tc_spkt_kit”,    name:“Sprocket & Chain Kit”,             part:”—”, supplier:”—”, category:“chain”,     price:null },
+{ id:“tc_chain”,       name:“Transfer Case Chain”,              part:”-”, supplier:”-”, category:“chain”,     price:null },
+{ id:“tc_drive_spkt”,  name:“Drive Sprocket”,                   part:”-”, supplier:”-”, category:“chain”,     price:null },
+{ id:“tc_driven_spkt”, name:“Driven Sprocket”,                  part:”-”, supplier:”-”, category:“chain”,     price:null },
+{ id:“tc_spkt_kit”,    name:“Sprocket & Chain Kit”,             part:”-”, supplier:”-”, category:“chain”,     price:null },
 // Hard Parts
-{ id:“tc_case_half_f”, name:“Front Case Half”,                  part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_case_half_r”, name:“Rear Case Half”,                   part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_mode_fork”,   name:“Mode Fork”,                        part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_range_fork”,  name:“Range Fork”,                       part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_shift_rail”,  name:“Shift Rail”,                       part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_annulus”,     name:“Annulus Gear”,                     part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_planet_assy”, name:“Planetary Assembly”,               part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_sun_gear”,    name:“Sun Gear”,                         part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_input_shaft”, name:“Input Shaft”,                      part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_output_f”,    name:“Front Output Shaft”,               part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_output_r”,    name:“Rear Output Shaft”,                part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“tc_magnet”,      name:“Drain Plug with Magnet”,           part:”—”, supplier:”—”, category:“hardparts”, price:null },
+{ id:“tc_case_half_f”, name:“Front Case Half”,                  part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_case_half_r”, name:“Rear Case Half”,                   part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_mode_fork”,   name:“Mode Fork”,                        part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_range_fork”,  name:“Range Fork”,                       part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_shift_rail”,  name:“Shift Rail”,                       part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_annulus”,     name:“Annulus Gear”,                     part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_planet_assy”, name:“Planetary Assembly”,               part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_sun_gear”,    name:“Sun Gear”,                         part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_input_shaft”, name:“Input Shaft”,                      part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_output_f”,    name:“Front Output Shaft”,               part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_output_r”,    name:“Rear Output Shaft”,                part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“tc_magnet”,      name:“Drain Plug with Magnet”,           part:”-”, supplier:”-”, category:“hardparts”, price:null },
 // Other
-{ id:“tc_fluid”,       name:“Transfer Case Fluid”,              part:”—”, supplier:”—”, category:“other”,     price:null },
-{ id:“tc_encoder_mtr”, name:“Encoder Motor”,                    part:”—”, supplier:”—”, category:“other”,     price:null },
-{ id:“tc_actuator”,    name:“Shift Actuator”,                   part:”—”, supplier:”—”, category:“other”,     price:null },
-{ id:“tc_speed_sens”,  name:“Speed Sensor”,                     part:”—”, supplier:”—”, category:“other”,     price:null },
-{ id:“tc_vent”,        name:“Vent Assembly”,                     part:”—”, supplier:”—”, category:“other”,     price:null },
+{ id:“tc_fluid”,       name:“Transfer Case Fluid”,              part:”-”, supplier:”-”, category:“other”,     price:null },
+{ id:“tc_encoder_mtr”, name:“Encoder Motor”,                    part:”-”, supplier:”-”, category:“other”,     price:null },
+{ id:“tc_actuator”,    name:“Shift Actuator”,                   part:”-”, supplier:”-”, category:“other”,     price:null },
+{ id:“tc_speed_sens”,  name:“Speed Sensor”,                     part:”-”, supplier:”-”, category:“other”,     price:null },
+{ id:“tc_vent”,        name:“Vent Assembly”,                     part:”-”, supplier:”-”, category:“other”,     price:null },
 ]
 },
 
 “DIFFERENTIAL”: {
-label: “Differential”, make: “Various”, icon: “🔧”,
+label: “Differential”, make: “Various”, icon: “ “,
 categories: {
 seals:    { label:“Bearing & Seal Kit”, color:”#f0c040” },
 gears:    { label:“Crown & Pinion”,     color:”#ff6b35” },
@@ -453,46 +453,46 @@ spider:   { label:“Spider Gears”,       color:”#81c784” },
 },
 parts: [
 // Bearing & Seal Kit
-{ id:“df_brg_seal”,    name:“Master Bearing & Seal Kit”,        part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_pinion_seal”, name:“Pinion Seal”,                      part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_axle_seal_l”, name:“Axle Seal (Left)”,                 part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_axle_seal_r”, name:“Axle Seal (Right)”,                part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_pinion_brg_f”,name:“Pinion Bearing (Front)”,           part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_pinion_brg_r”,name:“Pinion Bearing (Rear)”,            part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_carrier_brg”, name:“Carrier Bearings (Pair)”,          part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_shim_kit”,    name:“Shim Kit”,                         part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_crush_sleeve”,name:“Crush Sleeve”,                     part:”—”, supplier:”—”, category:“seals”,   price:null },
-{ id:“df_gasket”,      name:“Differential Cover Gasket”,        part:”—”, supplier:”—”, category:“seals”,   price:null },
+{ id:“df_brg_seal”,    name:“Master Bearing & Seal Kit”,        part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_pinion_seal”, name:“Pinion Seal”,                      part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_axle_seal_l”, name:“Axle Seal (Left)”,                 part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_axle_seal_r”, name:“Axle Seal (Right)”,                part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_pinion_brg_f”,name:“Pinion Bearing (Front)”,           part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_pinion_brg_r”,name:“Pinion Bearing (Rear)”,            part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_carrier_brg”, name:“Carrier Bearings (Pair)”,          part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_shim_kit”,    name:“Shim Kit”,                         part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_crush_sleeve”,name:“Crush Sleeve”,                     part:”-”, supplier:”-”, category:“seals”,   price:null },
+{ id:“df_gasket”,      name:“Differential Cover Gasket”,        part:”-”, supplier:”-”, category:“seals”,   price:null },
 // Crown & Pinion
-{ id:“df_ring_pinion”, name:“Ring & Pinion Set”,                part:”—”, supplier:”—”, category:“gears”,   price:null },
-{ id:“df_ring_gear”,   name:“Ring Gear Only”,                   part:”—”, supplier:”—”, category:“gears”,   price:null },
-{ id:“df_pinion_gear”, name:“Pinion Gear Only”,                 part:”—”, supplier:”—”, category:“gears”,   price:null },
-{ id:“df_pinion_nut”,  name:“Pinion Nut”,                       part:”—”, supplier:”—”, category:“gears”,   price:null },
-{ id:“df_yoke”,        name:“Pinion Yoke / Flange”,             part:”—”, supplier:”—”, category:“gears”,   price:null },
+{ id:“df_ring_pinion”, name:“Ring & Pinion Set”,                part:”-”, supplier:”-”, category:“gears”,   price:null },
+{ id:“df_ring_gear”,   name:“Ring Gear Only”,                   part:”-”, supplier:”-”, category:“gears”,   price:null },
+{ id:“df_pinion_gear”, name:“Pinion Gear Only”,                 part:”-”, supplier:”-”, category:“gears”,   price:null },
+{ id:“df_pinion_nut”,  name:“Pinion Nut”,                       part:”-”, supplier:”-”, category:“gears”,   price:null },
+{ id:“df_yoke”,        name:“Pinion Yoke / Flange”,             part:”-”, supplier:”-”, category:“gears”,   price:null },
 // Carrier
-{ id:“df_carrier”,     name:“Carrier Assembly”,                 part:”—”, supplier:”—”, category:“carrier”, price:null },
-{ id:“df_locker”,      name:“Locking Differential”,             part:”—”, supplier:”—”, category:“carrier”, price:null },
-{ id:“df_lsd”,         name:“Limited Slip Unit”,                part:”—”, supplier:”—”, category:“carrier”, price:null },
-{ id:“df_clutch_pack”, name:“LSD Clutch Pack”,                  part:”—”, supplier:”—”, category:“carrier”, price:null },
-{ id:“df_side_gear”,   name:“Side Gears (Pair)”,                part:”—”, supplier:”—”, category:“carrier”, price:null },
-{ id:“df_thrust_wash”, name:“Thrust Washers”,                   part:”—”, supplier:”—”, category:“carrier”, price:null },
+{ id:“df_carrier”,     name:“Carrier Assembly”,                 part:”-”, supplier:”-”, category:“carrier”, price:null },
+{ id:“df_locker”,      name:“Locking Differential”,             part:”-”, supplier:”-”, category:“carrier”, price:null },
+{ id:“df_lsd”,         name:“Limited Slip Unit”,                part:”-”, supplier:”-”, category:“carrier”, price:null },
+{ id:“df_clutch_pack”, name:“LSD Clutch Pack”,                  part:”-”, supplier:”-”, category:“carrier”, price:null },
+{ id:“df_side_gear”,   name:“Side Gears (Pair)”,                part:”-”, supplier:”-”, category:“carrier”, price:null },
+{ id:“df_thrust_wash”, name:“Thrust Washers”,                   part:”-”, supplier:”-”, category:“carrier”, price:null },
 // Axle & Bearings
-{ id:“df_axle_l”,      name:“Axle Shaft (Left)”,                part:”—”, supplier:”—”, category:“axle”,    price:null },
-{ id:“df_axle_r”,      name:“Axle Shaft (Right)”,               part:”—”, supplier:”—”, category:“axle”,    price:null },
-{ id:“df_axle_brg_l”,  name:“Axle Bearing (Left)”,              part:”—”, supplier:”—”, category:“axle”,    price:null },
-{ id:“df_axle_brg_r”,  name:“Axle Bearing (Right)”,             part:”—”, supplier:”—”, category:“axle”,    price:null },
-{ id:“df_axle_retainer”,name:“Axle Bearing Retainer”,           part:”—”, supplier:”—”, category:“axle”,    price:null },
-{ id:“df_cv_joint”,    name:“CV Joint / Half Shaft”,            part:”—”, supplier:”—”, category:“axle”,    price:null },
+{ id:“df_axle_l”,      name:“Axle Shaft (Left)”,                part:”-”, supplier:”-”, category:“axle”,    price:null },
+{ id:“df_axle_r”,      name:“Axle Shaft (Right)”,               part:”-”, supplier:”-”, category:“axle”,    price:null },
+{ id:“df_axle_brg_l”,  name:“Axle Bearing (Left)”,              part:”-”, supplier:”-”, category:“axle”,    price:null },
+{ id:“df_axle_brg_r”,  name:“Axle Bearing (Right)”,             part:”-”, supplier:”-”, category:“axle”,    price:null },
+{ id:“df_axle_retainer”,name:“Axle Bearing Retainer”,           part:”-”, supplier:”-”, category:“axle”,    price:null },
+{ id:“df_cv_joint”,    name:“CV Joint / Half Shaft”,            part:”-”, supplier:”-”, category:“axle”,    price:null },
 // Spider Gears
-{ id:“df_spider_kit”,  name:“Spider Gear Kit (Complete)”,       part:”—”, supplier:”—”, category:“spider”,  price:null },
-{ id:“df_spider_gear”, name:“Spider Gears (Set of 4)”,          part:”—”, supplier:”—”, category:“spider”,  price:null },
-{ id:“df_spider_pin”,  name:“Spider Gear Pin / Cross Shaft”,    part:”—”, supplier:”—”, category:“spider”,  price:null },
-{ id:“df_roll_pin”,    name:“Roll Pin / Lock Pin”,               part:”—”, supplier:”—”, category:“spider”,  price:null },
+{ id:“df_spider_kit”,  name:“Spider Gear Kit (Complete)”,       part:”-”, supplier:”-”, category:“spider”,  price:null },
+{ id:“df_spider_gear”, name:“Spider Gears (Set of 4)”,          part:”-”, supplier:”-”, category:“spider”,  price:null },
+{ id:“df_spider_pin”,  name:“Spider Gear Pin / Cross Shaft”,    part:”-”, supplier:”-”, category:“spider”,  price:null },
+{ id:“df_roll_pin”,    name:“Roll Pin / Lock Pin”,               part:”-”, supplier:”-”, category:“spider”,  price:null },
 ]
 },
 
 “GENERIC_AUTO”: {
-label: “Generic Auto Trans”, make: “Various”, icon: “🔩”,
+label: “Generic Auto Trans”, make: “Various”, icon: “ “,
 categories: {
 overhaul:   { label:“Overhaul / Kits”,      color:”#ff6b35” },
 friction:   { label:“Friction & Steels”,    color:”#f0c040” },
@@ -503,50 +503,50 @@ filter:     { label:“Filter & Pan”,         color:”#80cbc4” },
 },
 parts: [
 // Overhaul
-{ id:“ga_master_kit”,  name:“Master Rebuild Kit”,               part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_banner_kit”,  name:“Banner / Overhaul Kit”,            part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_seal_kit”,    name:“Seal Kit”,                         part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_bushing_kit”, name:“Bushing Kit”,                      part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_piston_kit”,  name:“Piston Kit”,                       part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_ring_kit”,    name:“Snap Ring Kit”,                    part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_washer_kit”,  name:“Thrust Washer Kit”,                part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_bearing_kit”, name:“Torrington Bearing Kit”,           part:”—”, supplier:”—”, category:“overhaul”,   price:null },
-{ id:“ga_surecure”,    name:“Surecure / Additive Kit”,          part:”—”, supplier:”—”, category:“overhaul”,   price:null },
+{ id:“ga_master_kit”,  name:“Master Rebuild Kit”,               part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_banner_kit”,  name:“Banner / Overhaul Kit”,            part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_seal_kit”,    name:“Seal Kit”,                         part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_bushing_kit”, name:“Bushing Kit”,                      part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_piston_kit”,  name:“Piston Kit”,                       part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_ring_kit”,    name:“Snap Ring Kit”,                    part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_washer_kit”,  name:“Thrust Washer Kit”,                part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_bearing_kit”, name:“Torrington Bearing Kit”,           part:”-”, supplier:”-”, category:“overhaul”,   price:null },
+{ id:“ga_surecure”,    name:“Surecure / Additive Kit”,          part:”-”, supplier:”-”, category:“overhaul”,   price:null },
 // Friction & Steels
-{ id:“ga_friction_mod”,name:“Friction Module”,                  part:”—”, supplier:”—”, category:“friction”,   price:null },
-{ id:“ga_steel_mod”,   name:“Steel Module”,                     part:”—”, supplier:”—”, category:“friction”,   price:null },
-{ id:“ga_band”,        name:“Band (Adjustable)”,                part:”—”, supplier:”—”, category:“friction”,   price:null },
-{ id:“ga_band_servo”,  name:“Band Servo Kit”,                   part:”—”, supplier:”—”, category:“friction”,   price:null },
-{ id:“ga_clutch_drum”, name:“Clutch Drum”,                      part:”—”, supplier:”—”, category:“friction”,   price:null },
-{ id:“ga_press_plate”, name:“Pressure Plate”,                   part:”—”, supplier:”—”, category:“friction”,   price:null },
+{ id:“ga_friction_mod”,name:“Friction Module”,                  part:”-”, supplier:”-”, category:“friction”,   price:null },
+{ id:“ga_steel_mod”,   name:“Steel Module”,                     part:”-”, supplier:”-”, category:“friction”,   price:null },
+{ id:“ga_band”,        name:“Band (Adjustable)”,                part:”-”, supplier:”-”, category:“friction”,   price:null },
+{ id:“ga_band_servo”,  name:“Band Servo Kit”,                   part:”-”, supplier:”-”, category:“friction”,   price:null },
+{ id:“ga_clutch_drum”, name:“Clutch Drum”,                      part:”-”, supplier:”-”, category:“friction”,   price:null },
+{ id:“ga_press_plate”, name:“Pressure Plate”,                   part:”-”, supplier:”-”, category:“friction”,   price:null },
 // Electrical
-{ id:“ga_sol_kit”,     name:“Solenoid Kit (Full Set)”,          part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_sol_body”,    name:“Solenoid Body / Block”,            part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_tcc_sol”,     name:“TCC Solenoid”,                     part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_shift_sol”,   name:“Shift Solenoid”,                   part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_pcs”,         name:“Pressure Control Solenoid”,        part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_harness”,     name:“Internal Wiring Harness”,          part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_transducer”,  name:“Transducer / Pressure Switch”,     part:”—”, supplier:”—”, category:“electrical”, price:null },
-{ id:“ga_speed_sens”,  name:“Input / Output Speed Sensor”,      part:”—”, supplier:”—”, category:“electrical”, price:null },
+{ id:“ga_sol_kit”,     name:“Solenoid Kit (Full Set)”,          part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_sol_body”,    name:“Solenoid Body / Block”,            part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_tcc_sol”,     name:“TCC Solenoid”,                     part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_shift_sol”,   name:“Shift Solenoid”,                   part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_pcs”,         name:“Pressure Control Solenoid”,        part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_harness”,     name:“Internal Wiring Harness”,          part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_transducer”,  name:“Transducer / Pressure Switch”,     part:”-”, supplier:”-”, category:“electrical”, price:null },
+{ id:“ga_speed_sens”,  name:“Input / Output Speed Sensor”,      part:”-”, supplier:”-”, category:“electrical”, price:null },
 // Pump
-{ id:“ga_pump_assy”,   name:“Pump Assembly (Complete)”,         part:”—”, supplier:”—”, category:“pump”,       price:null },
-{ id:“ga_pump_gears”,  name:“Pump Gear Set”,                    part:”—”, supplier:”—”, category:“pump”,       price:null },
-{ id:“ga_pump_seal”,   name:“Pump Seal”,                        part:”—”, supplier:”—”, category:“pump”,       price:null },
-{ id:“ga_pump_bushing”,name:“Pump Bushing”,                     part:”—”, supplier:”—”, category:“pump”,       price:null },
+{ id:“ga_pump_assy”,   name:“Pump Assembly (Complete)”,         part:”-”, supplier:”-”, category:“pump”,       price:null },
+{ id:“ga_pump_gears”,  name:“Pump Gear Set”,                    part:”-”, supplier:”-”, category:“pump”,       price:null },
+{ id:“ga_pump_seal”,   name:“Pump Seal”,                        part:”-”, supplier:”-”, category:“pump”,       price:null },
+{ id:“ga_pump_bushing”,name:“Pump Bushing”,                     part:”-”, supplier:”-”, category:“pump”,       price:null },
 // Hard Parts
-{ id:“ga_tc”,          name:“Torque Converter”,                 part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_valve_body”,  name:“Valve Body”,                       part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_sep_plate”,   name:“Separator Plate”,                  part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_planetary”,   name:“Planetary Assembly”,               part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_sun_shell”,   name:“Sun Shell”,                        part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_sprag”,       name:“Sprag / One Way Clutch”,           part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_output_shaft”,name:“Output Shaft”,                     part:”—”, supplier:”—”, category:“hardparts”,  price:null },
-{ id:“ga_input_shaft”, name:“Input Shaft”,                      part:”—”, supplier:”—”, category:“hardparts”,  price:null },
+{ id:“ga_tc”,          name:“Torque Converter”,                 part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_valve_body”,  name:“Valve Body”,                       part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_sep_plate”,   name:“Separator Plate”,                  part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_planetary”,   name:“Planetary Assembly”,               part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_sun_shell”,   name:“Sun Shell”,                        part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_sprag”,       name:“Sprag / One Way Clutch”,           part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_output_shaft”,name:“Output Shaft”,                     part:”-”, supplier:”-”, category:“hardparts”,  price:null },
+{ id:“ga_input_shaft”, name:“Input Shaft”,                      part:”-”, supplier:”-”, category:“hardparts”,  price:null },
 // Filter & Pan
-{ id:“ga_filter”,      name:“Filter”,                           part:”—”, supplier:”—”, category:“filter”,     price:null },
-{ id:“ga_pan_gasket”,  name:“Pan Gasket”,                       part:”—”, supplier:”—”, category:“filter”,     price:null },
-{ id:“ga_pan”,         name:“Oil Pan”,                          part:”—”, supplier:”—”, category:“filter”,     price:null },
-{ id:“ga_drain_plug”,  name:“Drain Plug / Magnet”,              part:”—”, supplier:”—”, category:“filter”,     price:null },
+{ id:“ga_filter”,      name:“Filter”,                           part:”-”, supplier:”-”, category:“filter”,     price:null },
+{ id:“ga_pan_gasket”,  name:“Pan Gasket”,                       part:”-”, supplier:”-”, category:“filter”,     price:null },
+{ id:“ga_pan”,         name:“Oil Pan”,                          part:”-”, supplier:”-”, category:“filter”,     price:null },
+{ id:“ga_drain_plug”,  name:“Drain Plug / Magnet”,              part:”-”, supplier:”-”, category:“filter”,     price:null },
 ]
 },
 
@@ -562,58 +562,58 @@ clutch:    { label:“Clutch System”,       color:”#81c784” },
 },
 parts: [
 // Overhaul / Seals
-{ id:“mt_master_kit”,  name:“Master Rebuild Kit”,               part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_bearing_kit”, name:“Bearing Kit (Full Set)”,           part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_seal_kit”,    name:“Seal Kit”,                         part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_input_seal”,  name:“Input Shaft Seal”,                 part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_output_seal”, name:“Output Shaft Seal”,                part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_shift_seal”,  name:“Shift Shaft Seal”,                 part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_gasket_set”,  name:“Gasket Set”,                       part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_snap_rings”,  name:“Snap Ring Kit”,                    part:”—”, supplier:”—”, category:“overhaul”,  price:null },
-{ id:“mt_shim_kit”,    name:“Shim / Spacer Kit”,                part:”—”, supplier:”—”, category:“overhaul”,  price:null },
+{ id:“mt_master_kit”,  name:“Master Rebuild Kit”,               part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_bearing_kit”, name:“Bearing Kit (Full Set)”,           part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_seal_kit”,    name:“Seal Kit”,                         part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_input_seal”,  name:“Input Shaft Seal”,                 part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_output_seal”, name:“Output Shaft Seal”,                part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_shift_seal”,  name:“Shift Shaft Seal”,                 part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_gasket_set”,  name:“Gasket Set”,                       part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_snap_rings”,  name:“Snap Ring Kit”,                    part:”-”, supplier:”-”, category:“overhaul”,  price:null },
+{ id:“mt_shim_kit”,    name:“Shim / Spacer Kit”,                part:”-”, supplier:”-”, category:“overhaul”,  price:null },
 // Gear Sets
-{ id:“mt_1st_gear”,    name:“1st Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_2nd_gear”,    name:“2nd Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_3rd_gear”,    name:“3rd Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_4th_gear”,    name:“4th Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_5th_gear”,    name:“5th Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_6th_gear”,    name:“6th Gear”,                         part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_reverse_gear”,name:“Reverse Gear / Idler”,             part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_countershaft”,name:“Countershaft / Cluster Gear”,      part:”—”, supplier:”—”, category:“gears”,     price:null },
-{ id:“mt_mainshaft”,   name:“Mainshaft”,                        part:”—”, supplier:”—”, category:“gears”,     price:null },
+{ id:“mt_1st_gear”,    name:“1st Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_2nd_gear”,    name:“2nd Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_3rd_gear”,    name:“3rd Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_4th_gear”,    name:“4th Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_5th_gear”,    name:“5th Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_6th_gear”,    name:“6th Gear”,                         part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_reverse_gear”,name:“Reverse Gear / Idler”,             part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_countershaft”,name:“Countershaft / Cluster Gear”,      part:”-”, supplier:”-”, category:“gears”,     price:null },
+{ id:“mt_mainshaft”,   name:“Mainshaft”,                        part:”-”, supplier:”-”, category:“gears”,     price:null },
 // Synchros & Rings
-{ id:“mt_syncro_kit”,  name:“Synchro Kit (Full Set)”,           part:”—”, supplier:”—”, category:“syncro”,    price:null },
-{ id:“mt_syncro_12”,   name:“1st-2nd Synchro Assembly”,         part:”—”, supplier:”—”, category:“syncro”,    price:null },
-{ id:“mt_syncro_34”,   name:“3rd-4th Synchro Assembly”,         part:”—”, supplier:”—”, category:“syncro”,    price:null },
-{ id:“mt_syncro_56”,   name:“5th-6th Synchro Assembly”,         part:”—”, supplier:”—”, category:“syncro”,    price:null },
-{ id:“mt_blocking_rng”,name:“Blocking Rings (Set)”,             part:”—”, supplier:”—”, category:“syncro”,    price:null },
-{ id:“mt_sync_springs”,name:“Synchro Springs & Keys”,           part:”—”, supplier:”—”, category:“syncro”,    price:null },
+{ id:“mt_syncro_kit”,  name:“Synchro Kit (Full Set)”,           part:”-”, supplier:”-”, category:“syncro”,    price:null },
+{ id:“mt_syncro_12”,   name:“1st-2nd Synchro Assembly”,         part:”-”, supplier:”-”, category:“syncro”,    price:null },
+{ id:“mt_syncro_34”,   name:“3rd-4th Synchro Assembly”,         part:”-”, supplier:”-”, category:“syncro”,    price:null },
+{ id:“mt_syncro_56”,   name:“5th-6th Synchro Assembly”,         part:”-”, supplier:”-”, category:“syncro”,    price:null },
+{ id:“mt_blocking_rng”,name:“Blocking Rings (Set)”,             part:”-”, supplier:”-”, category:“syncro”,    price:null },
+{ id:“mt_sync_springs”,name:“Synchro Springs & Keys”,           part:”-”, supplier:”-”, category:“syncro”,    price:null },
 // Shift Components
-{ id:“mt_shift_fork_1”,name:“Shift Fork 1-2”,                   part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_shift_fork_2”,name:“Shift Fork 3-4”,                   part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_shift_fork_3”,name:“Shift Fork 5-6 / Rev”,             part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_shift_rail”,  name:“Shift Rails (Set)”,                part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_detent_kit”,  name:“Detent Ball & Spring Kit”,         part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_interlock”,   name:“Interlock Pins”,                   part:”—”, supplier:”—”, category:“shift”,     price:null },
-{ id:“mt_shift_lever”, name:“Shift Lever / Tower”,              part:”—”, supplier:”—”, category:“shift”,     price:null },
+{ id:“mt_shift_fork_1”,name:“Shift Fork 1-2”,                   part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_shift_fork_2”,name:“Shift Fork 3-4”,                   part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_shift_fork_3”,name:“Shift Fork 5-6 / Rev”,             part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_shift_rail”,  name:“Shift Rails (Set)”,                part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_detent_kit”,  name:“Detent Ball & Spring Kit”,         part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_interlock”,   name:“Interlock Pins”,                   part:”-”, supplier:”-”, category:“shift”,     price:null },
+{ id:“mt_shift_lever”, name:“Shift Lever / Tower”,              part:”-”, supplier:”-”, category:“shift”,     price:null },
 // Hard Parts
-{ id:“mt_input_shaft”, name:“Input Shaft”,                      part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_output_shaft”,name:“Output Shaft”,                     part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_case_front”,  name:“Front Case / Bell Housing”,        part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_case_rear”,   name:“Rear Extension Housing”,           part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_input_brg”,   name:“Input Shaft Bearing”,              part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_output_brg”,  name:“Output Shaft Bearing”,             part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_counter_brg”, name:“Countershaft Bearings (Set)”,      part:”—”, supplier:”—”, category:“hardparts”, price:null },
-{ id:“mt_pilot_brg”,   name:“Pilot Bearing”,                    part:”—”, supplier:”—”, category:“hardparts”, price:null },
+{ id:“mt_input_shaft”, name:“Input Shaft”,                      part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_output_shaft”,name:“Output Shaft”,                     part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_case_front”,  name:“Front Case / Bell Housing”,        part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_case_rear”,   name:“Rear Extension Housing”,           part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_input_brg”,   name:“Input Shaft Bearing”,              part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_output_brg”,  name:“Output Shaft Bearing”,             part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_counter_brg”, name:“Countershaft Bearings (Set)”,      part:”-”, supplier:”-”, category:“hardparts”, price:null },
+{ id:“mt_pilot_brg”,   name:“Pilot Bearing”,                    part:”-”, supplier:”-”, category:“hardparts”, price:null },
 // Clutch System
-{ id:“mt_clutch_kit”,  name:“Clutch Kit (Disc, Pressure, Bearing)”, part:”—”, supplier:”—”, category:“clutch”, price:null },
-{ id:“mt_clutch_disc”, name:“Clutch Disc”,                      part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_pressure_pl”, name:“Pressure Plate”,                   part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_throw_brg”,   name:“Throw-Out / Release Bearing”,      part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_flywheel”,    name:“Flywheel / Flexplate”,             part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_slave_cyl”,   name:“Slave Cylinder”,                   part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_master_cyl”,  name:“Master Cylinder”,                  part:”—”, supplier:”—”, category:“clutch”,    price:null },
-{ id:“mt_clutch_line”, name:“Clutch Hydraulic Line”,            part:”—”, supplier:”—”, category:“clutch”,    price:null },
+{ id:“mt_clutch_kit”,  name:“Clutch Kit (Disc, Pressure, Bearing)”, part:”-”, supplier:”-”, category:“clutch”, price:null },
+{ id:“mt_clutch_disc”, name:“Clutch Disc”,                      part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_pressure_pl”, name:“Pressure Plate”,                   part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_throw_brg”,   name:“Throw-Out / Release Bearing”,      part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_flywheel”,    name:“Flywheel / Flexplate”,             part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_slave_cyl”,   name:“Slave Cylinder”,                   part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_master_cyl”,  name:“Master Cylinder”,                  part:”-”, supplier:”-”, category:“clutch”,    price:null },
+{ id:“mt_clutch_line”, name:“Clutch Hydraulic Line”,            part:”-”, supplier:”-”, category:“clutch”,    price:null },
 ]
 },
 };
@@ -626,7 +626,7 @@ const MAKES = {
 “Various”:       “#607d8b”,
 };
 
-// Combined lookup — transmission or other service
+// Combined lookup - transmission or other service
 const ALL_SERVICES = { …TRANSMISSIONS, …OTHER_SERVICES };
 const SERVICE_TYPE_GROUPS = [
 { label:“Automatic Transmissions”, color:”#ff6b35”, keys: Object.keys(TRANSMISSIONS) },
@@ -636,7 +636,7 @@ const SERVICE_TYPE_GROUPS = [
 { label:“Manual Transmission”,     color:”#ce93d8”, keys: [“MANUAL_TRANS”] },
 ];
 
-// ─── REMOVAL CHECKLIST ───────────────────────────────────────────────────────
+// — REMOVAL CHECKLIST —————————————————––
 const REMOVAL_ITEMS = [
 { id:“ds_front”,    label:“Front Driveshaft”,           category:“driveline”, photo:false },
 { id:“ds_rear”,     label:“Rear Driveshaft”,            category:“driveline”, photo:false },
@@ -679,7 +679,7 @@ const STATUS_COLORS = { “Pass”:”#4caf50”,“Fail”:”#f44336”,“Nee
 
 const EMPTY_CUSTOM = () => ({ name:””, part:””, supplier:””, price:”” });
 
-// ─── DEMO RO DATA ─────────────────────────────────────────────────────────────
+// — DEMO RO DATA ———————————————————––
 const DEMO_ROS = {
 “RO-1001”: { vehicle:“2020 Ram 2500 6.7L Cummins”,         year:“2020”, trans:“68RFE”    },
 “RO-1002”: { vehicle:“2018 Chevrolet Silverado 1500 5.3L”, year:“2018”, trans:“6L80E”    },
@@ -694,7 +694,7 @@ const DEMO_ROS = {
 “RO-1011”: { vehicle:“2016 Jeep Wrangler 3.6L”,            year:“2016”, trans:“MANUAL_TRANS”  },
 };
 
-// ─── MAIN APP ────────────────────────────────────────────────────────────────
+// — MAIN APP ––––––––––––––––––––––––––––––––
 export default function TransmissionApp() {
 const [screen, setScreen]         = useState(“ro”);    // ro | stage1 | stage2 | advisor | settings
 const [roInfo, setRoInfo]         = useState({ ro:””, vehicle:””, year:””, trans:“68RFE” });
@@ -714,7 +714,7 @@ const [serviceLines, setServiceLines]     = useState([]); // all lines on the RO
 const [targetLineId, setTargetLineId]     = useState(null); // chosen service line id
 const [showLinePicker, setShowLinePicker] = useState(false); // warn modal
 
-// Demo service lines — simulates what Shopmonkey returns for an RO
+// Demo service lines - simulates what Shopmonkey returns for an RO
 const DEMO_SERVICE_LINES = [
 { id:“SL-001”, name:“Overhaul and Installation of Transmission”,  labor:1200 },
 { id:“SL-002”, name:“Transmission Flush and Fluid Service”,        labor:180  },
@@ -745,7 +745,7 @@ const [openTp, setOpenTp]         = useState(null);
 const photoRefs = useRef({});
 const trans = ALL_SERVICES[roInfo.trans] || ALL_SERVICES[“68RFE”];
 
-// ── helpers ──────────────────────────────────────────────────────────────
+// – helpers –––––––––––––––––––––––––––––––
 const setS1Item = (id, field, val) =>
 setS1Data(p => ({ …p, [id]: { …p[id], [field]: val } }));
 
@@ -760,7 +760,7 @@ return 0;
 const selectedParts = trans.parts.filter(p => s2Selected[p.id]);
 const customPartsTotal = s2Custom.reduce((s,c) => s + (parseFloat(c.price)||0), 0);
 
-// ── Shopmonkey helpers ────────────────────────────────────────────────────
+// – Shopmonkey helpers ––––––––––––––––––––––––––
 const lookupRO = async () => {
 if (!roInfo.ro) return;
 setRoLookup(“loading”);
@@ -803,7 +803,7 @@ setShowLinePicker(false);
 
 ```
 const allParts = [
-  ...selectedParts.map(p=>({ name:p.name, partNum:p.part !== "—" ? p.part : "", price:getPrice(p), supplier:p.supplier !== "—" ? p.supplier : "" })),
+  ...selectedParts.map(p=>({ name:p.name, partNum:p.part !== "-" ? p.part : "", price:getPrice(p), supplier:p.supplier !== "-" ? p.supplier : "" })),
   ...[...s1Custom,...s2Custom].filter(c=>c.name).map(c=>({ name:c.name, partNum:c.part||"", price:parseFloat(c.price)||0, supplier:c.supplier||"" }))
 ];
 
@@ -821,7 +821,7 @@ if (demoMode) {
     : lines.find(l => TARGET_PHRASES.some(ph => l.name.toLowerCase().includes(ph)));
 
   if (!targetLine && !useLineId) {
-    // No match — show picker
+    // No match - show picker
     setShowLinePicker(true);
     setPushState("idle");
     return;
@@ -877,11 +877,11 @@ if (demoMode) {
             retailPrice: part.price || 0,
             wholesalePrice: part.price || 0,
             quantity: 1,
-            note: `Supplier: ${part.supplier||"—"} | Added via GearFlow`,
+            note: `Supplier: ${part.supplier||"-"} | Added via GearFlow`,
           })
         });
         const d = await res.json();
-        log.push({ name:part.name, status:d.success?"success":"error", id:d.data?.id||d.message||"—", line:targetLine.name });
+        log.push({ name:part.name, status:d.success?"success":"error", id:d.data?.id||d.message||"-", line:targetLine.name });
       } catch(e) {
         log.push({ name:part.name, status:"error", id:e.message, line:targetLine?.name||"" });
       }
@@ -932,7 +932,7 @@ pair:“Consider pairing with the matching filter or seal kit.”
 setLoadingTp(p => ({…p, [part.id]: false}));
 };
 
-// ── SCREENS ───────────────────────────────────────────────────────────────
+// – SCREENS —————————————————————
 return (
 <div style={{ fontFamily:”‘Share Tech Mono’,‘Courier New’,monospace”, background:”#e8edf2”, minHeight:“100vh”, color:”#1a2230” }}>
 <style>{`
@@ -941,7 +941,7 @@ return (
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#c0ccd8;border-radius:2px;}
 
 ```
-    /* ── BASE: light steel background, dark text ── */
+    /* -- BASE: light steel background, dark text -- */
     body{background:#e8edf2;}
 
     .hdr{background:#1a2230;border-bottom:3px solid #ff6b35;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,0.3);}
@@ -1127,11 +1127,11 @@ return (
       <button className={`nb ${screen==="stage1"?"on":""}`} onClick={()=>setScreen("stage1")} disabled={!roInfo.ro}>S1: Removal</button>
       <button className={`nb ${screen==="stage2"?"on":""}`} onClick={()=>setScreen("stage2")} disabled={!s1Signed}>S2: Strip</button>
       <button className={`nb ${screen==="advisor"?"on":""}`} onClick={()=>setScreen("advisor")} disabled={!s2Signed}>Advisor</button>
-      <button className={`nb ${screen==="settings"?"on":""}`} onClick={()=>setScreen("settings")}>⚙</button>
+      <button className={`nb ${screen==="settings"?"on":""}`} onClick={()=>setScreen("settings")}> </button>
     </div>
   </div>
 
-  {/* ── RO SCREEN ─────────────────────────────────────────────────── */}
+  {/* -- RO SCREEN --------------------------------------------------- */}
   {screen === "ro" && (
     <div className="pg">
       <div className="section-title">New Service Order</div>
@@ -1139,7 +1139,7 @@ return (
       {/* Shopmonkey RO Lookup */}
       <div style={{background:"#1a2230",borderRadius:6,padding:16,marginBottom:20}}>
         <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#8899aa",marginBottom:10,fontWeight:700}}>
-          {demoMode ? "🔵 Demo Mode — Shopmonkey Lookup" : "🟢 Live — Shopmonkey Lookup"}
+          {demoMode ? "  Demo Mode - Shopmonkey Lookup" : "  Live - Shopmonkey Lookup"}
         </div>
         <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
           <input
@@ -1154,28 +1154,28 @@ return (
             onClick={lookupRO}
             disabled={!roInfo.ro||roLookup==="loading"}
             style={{padding:"10px 18px",background:"#ff6b35",color:"#fff",border:"none",borderRadius:4,fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",flexShrink:0,opacity:(!roInfo.ro||roLookup==="loading")?0.5:1}}
-          >{roLookup==="loading"?"Searching...":"Lookup RO →"}</button>
+          >{roLookup==="loading"?"Searching...":"Lookup RO  "}</button>
         </div>
         {roLookup==="found" && (
           <div style={{marginTop:10,padding:"8px 12px",background:"#22aa5522",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:600}}>
-            ✓ Found — {roInfo.vehicle} · {roInfo.year} {roInfo.orderId && <span style={{fontSize:9,opacity:0.7}}>· ID: {roInfo.orderId}</span>}
+              Found - {roInfo.vehicle}   {roInfo.year} {roInfo.orderId && <span style={{fontSize:9,opacity:0.7}}>  ID: {roInfo.orderId}</span>}
           </div>
         )}
         {roLookup==="error" && (
           <div style={{marginTop:10,padding:"10px 12px",background:"#f4433622",border:"1px solid #f44336",borderRadius:4,fontSize:11,color:"#f44336"}}>
-            <div style={{fontWeight:700,marginBottom:6}}>✗ RO not found in Shopmonkey</div>
+            <div style={{fontWeight:700,marginBottom:6}}>  RO not found in Shopmonkey</div>
             {!demoMode && (
               <div style={{fontSize:10,color:"#ff8a80",lineHeight:1.7}}>
-                Check: your RO number in Shopmonkey may be a display number — the API filters by the <strong>number</strong> field. Try entering just the digits (e.g. <strong>10600252</strong>) without any prefix. Also confirm your API key has Work Orders read permission.
+                Check: your RO number in Shopmonkey may be a display number - the API filters by the <strong>number</strong> field. Try entering just the digits (e.g. <strong>10600252</strong>) without any prefix. Also confirm your API key has Work Orders read permission.
               </div>
             )}
             <div style={{marginTop:6,fontSize:10,color:"#ff8a80"}}>Fill in details manually below or adjust the RO number format.</div>
           </div>
         )}
-        {/* Debug panel — shows raw API response to diagnose issues */}
+        {/* Debug panel - shows raw API response to diagnose issues */}
         {!demoMode && apiDebug && roLookup==="error" && (
           <div style={{marginTop:10,background:"#1a2230",borderRadius:5,padding:14,border:"1px solid #2a3a4a"}}>
-            <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#ff9800",marginBottom:10,fontWeight:700}}>🔍 API Debug Info</div>
+            <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#ff9800",marginBottom:10,fontWeight:700}}>  API Debug Info</div>
             <div style={{display:"flex",flexDirection:"column",gap:6,fontFamily:"'Share Tech Mono',monospace",fontSize:10}}>
               <div style={{display:"flex",gap:8}}>
                 <span style={{color:"#4a5a6a",minWidth:100}}>HTTP Status:</span>
@@ -1254,19 +1254,19 @@ return (
       ))}
 
       <button className="go-btn" disabled={!roInfo.ro||!roInfo.vehicle} onClick={()=>setScreen("stage1")}>
-        Start Stage 1 — Removal →
+        Start Stage 1 - Removal  
       </button>
     </div>
   )}
 
-  {/* ── STAGE 1: REMOVAL ──────────────────────────────────────────── */}
+  {/* -- STAGE 1: REMOVAL -------------------------------------------- */}
   {screen === "stage1" && (
     <>
     <div className="pg">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
         <div>
-          <div className="section-title" style={{marginBottom:2}}>Stage 1 — Removal Inspection</div>
-          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span></div>
+          <div className="section-title" style={{marginBottom:2}}>Stage 1 - Removal Inspection</div>
+          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span></div>
         </div>
         <div className="stats-row" style={{margin:0,width:"auto"}}>
           <div className="stat-box"><div className="stat-val" style={{color:"#f44336"}}>{failCount}</div><div className="stat-lbl">Fail</div></div>
@@ -1323,7 +1323,7 @@ return (
                         <button
                           className={`photo-btn ${d.photo?"has":""}`}
                           onClick={()=>photoRefs.current[item.id]?.click()}
-                        >{d.photo?"📷 Photo Taken":"📷 Add Photo"}</button>
+                        >{d.photo?"  Photo Taken":"  Add Photo"}</button>
                       </>
                     )}
                   </div>
@@ -1337,7 +1337,7 @@ return (
 
       {/* Custom rows Stage 1 */}
       <div className="custom-section">
-        <div className="custom-title">Additional Parts Required — Removal Tech</div>
+        <div className="custom-title">Additional Parts Required - Removal Tech</div>
         {s1Custom.map((row,i)=>(
           <div className="custom-row" key={i}>
             <input className="ci" placeholder="Part name" value={row.name} onChange={e=>{const c=[...s1Custom];c[i]={...c[i],name:e.target.value};setS1Custom(c);}} />
@@ -1356,21 +1356,21 @@ return (
           className={`sign-btn ${s1Signed?"done":""}`}
           disabled={s1Initials.length<2 || s1Signed}
           onClick={()=>{ setS1Signed(true); setScreen("stage2"); }}
-        >{s1Signed?`✓ Signed — ${s1Initials}`:"Sign & Advance to Strip →"}</button>
+        >{s1Signed?`  Signed - ${s1Initials}`:"Sign & Advance to Strip  "}</button>
       </div>
       <div style={{height:70}}/>
     </div>
     </>
   )}
 
-  {/* ── STAGE 2: STRIP DOWN ───────────────────────────────────────── */}
+  {/* -- STAGE 2: STRIP DOWN ----------------------------------------- */}
   {screen === "stage2" && (
     <>
     <div className="pg">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
         <div>
-          <div className="section-title" style={{marginBottom:2}}>Stage 2 — Strip Down & Parts Selection</div>
-          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span> · S1: <span style={{color:"#00cfff"}}>{s1Initials}</span></div>
+          <div className="section-title" style={{marginBottom:2}}>Stage 2 - Strip Down & Parts Selection</div>
+          <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>{roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span>   S1: <span style={{color:"#00cfff"}}>{s1Initials}</span></div>
         </div>
       </div>
 
@@ -1414,10 +1414,10 @@ return (
                   const showPart = roInfo.trans !== "CVT";
                   return (
                     <div key={part.id} className={`pc ${isSel?"sel":""}`} style={{"--c":catInfo.color}} onClick={()=>togglePart(part.id)}>
-                      {isSel && <div className="chk">✓</div>}
+                      {isSel && <div className="chk"> </div>}
                       <div className="pc-name">{part.name}</div>
-                      {showPart && part.part && part.part !== "—" && <div className="pc-num">{part.part}</div>}
-                      {showPart && part.supplier && part.supplier !== "—" && <span className="pc-sup">{part.supplier}</span>}
+                      {showPart && part.part && part.part !== "-" && <div className="pc-num">{part.part}</div>}
+                      {showPart && part.supplier && part.supplier !== "-" && <span className="pc-sup">{part.supplier}</span>}
                       {isSel && (
                         <div className="pc-price-row" onClick={e=>e.stopPropagation()}>
                           {hasFixed
@@ -1439,7 +1439,7 @@ return (
 
       {/* Custom rows Stage 2 */}
       <div className="custom-section">
-        <div className="custom-title">Additional Parts Required — Strip Down Tech</div>
+        <div className="custom-title">Additional Parts Required - Strip Down Tech</div>
         {s2Custom.map((row,i)=>(
           <div className="custom-row" key={i}>
             <input className="ci" placeholder="Part name" value={row.name} onChange={e=>{const c=[...s2Custom];c[i]={...c[i],name:e.target.value};setS2Custom(c);}} />
@@ -1458,45 +1458,45 @@ return (
           className={`sign-btn ${s2Signed?"done":""}`}
           disabled={s2Initials.length<2 || s2Signed || selectedParts.length===0}
           onClick={()=>{ setS2Signed(true); setScreen("advisor"); }}
-        >{s2Signed?`✓ Approved — ${s2Initials}`:"Approve & Send to Advisor →"}</button>
+        >{s2Signed?`  Approved - ${s2Initials}`:"Approve & Send to Advisor  "}</button>
       </div>
       <div style={{height:70}}/>
     </div>
 
     <div className="sticky-bot">
       <div className="sb-stat"><span className="sb-lbl">Parts</span><span className="sb-val og">{selectedParts.length}</span></div>
-      <div className="sb-stat"><span className="sb-lbl">Est. Total</span><span className="sb-val gn">{totalParts>0?`$${totalParts.toLocaleString()}`:"—"}</span></div>
+      <div className="sb-stat"><span className="sb-lbl">Est. Total</span><span className="sb-val gn">{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</span></div>
       <div style={{flex:1}}/>
     </div>
     </>
   )}
 
-  {/* ── ADVISOR SCREEN ────────────────────────────────────────────── */}
+  {/* -- ADVISOR SCREEN ---------------------------------------------- */}
   {screen === "advisor" && (
     <div className="pg">
       {!s2Signed ? (
-        <div className="empty"><div className="empty-ico">🔒</div><div className="empty-txt">Awaiting Stage 2 lead tech approval.</div></div>
+        <div className="empty"><div className="empty-ico"> </div><div className="empty-txt">Awaiting Stage 2 lead tech approval.</div></div>
       ) : (
         <>
           <div style={{marginBottom:16}}>
             <div className="section-title" style={{marginBottom:2}}>Advisor Quote Sheet</div>
             <div style={{fontSize:10,color:"#334455",letterSpacing:1}}>
-              {roInfo.vehicle} · {roInfo.ro} · <span style={{color:makeLabel}}>{trans.label}</span>
-              {" "}· S1: <span style={{color:"#00cfff"}}>{s1Initials}</span>
-              {" "}· S2: <span style={{color:"#4caf50"}}>{s2Initials}</span>
+              {roInfo.vehicle}   {roInfo.ro}   <span style={{color:makeLabel}}>{trans.label}</span>
+              {" "}  S1: <span style={{color:"#00cfff"}}>{s1Initials}</span>
+              {" "}  S2: <span style={{color:"#4caf50"}}>{s2Initials}</span>
             </div>
           </div>
 
           <div className="adv-cards">
             <div className="adv-stat"><div className="adv-stat-lbl">Parts Selected</div><div className="adv-stat-val" style={{color:"#ff6b35"}}>{selectedParts.length}</div></div>
-            <div className="adv-stat"><div className="adv-stat-lbl">Est. Parts Cost</div><div className="adv-stat-val" style={{color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"—"}</div></div>
+            <div className="adv-stat"><div className="adv-stat-lbl">Est. Parts Cost</div><div className="adv-stat-val" style={{color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</div></div>
             <div className="adv-stat"><div className="adv-stat-lbl">Stage 1 Flags</div><div className="adv-stat-val" style={{color:"#ff9800"}}>{failCount+attnCount}</div></div>
           </div>
 
           {/* Removal flags summary */}
           {(failCount>0||attnCount>0) && (
             <div style={{marginBottom:20}}>
-              <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a",marginBottom:8}}>Removal Findings — Tech {s1Initials}</div>
+              <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a",marginBottom:8}}>Removal Findings - Tech {s1Initials}</div>
               {REMOVAL_ITEMS.filter(i=>s1Data[i.id]?.status&&s1Data[i.id].status!=="Pass").map(item=>(
                 <div className="flag-item" key={item.id} style={{"--fc":STATUS_COLORS[s1Data[item.id].status]}}>
                   <span className="flag-status">{s1Data[item.id].status}</span>
@@ -1507,7 +1507,7 @@ return (
             </div>
           )}
 
-          <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a",marginBottom:10}}>Parts — Tap for Talking Points</div>
+          <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a",marginBottom:10}}>Parts - Tap for Talking Points</div>
 
           {selectedParts.map(part=>{
             const cat = trans.categories[part.category];
@@ -1522,10 +1522,10 @@ return (
                   <div className="adv-info">
                     <div className="adv-name">{part.name}</div>
                     <div className="adv-sub" style={{color:cat?.color}}>{cat?.label}</div>
-                    {showPart && part.part && part.part!=="—" && <div className="adv-num">{part.part} · {part.supplier}</div>}
+                    {showPart && part.part && part.part!=="-" && <div className="adv-num">{part.part}   {part.supplier}</div>}
                   </div>
                   {price>0 && <div className="adv-price">${price.toLocaleString()}</div>}
-                  <div className="adv-arr">▶</div>
+                  <div className="adv-arr"> </div>
                 </div>
                 {isOpen && (
                   <div className="tp-wrap">
@@ -1534,14 +1534,14 @@ return (
                     ) : tp ? (
                       <>
                         <div className="tp-pitch">
-                          <div className="tp-pitch-lbl">💬 Say This</div>
+                          <div className="tp-pitch-lbl">  Say This</div>
                           <div className="tp-pitch-txt">"{tp.pitch}"</div>
                         </div>
                         <div className="tp-row">
                           <div className="tp-c"><div className="tp-cl">Why It Matters</div><div className="tp-ct">{tp.why}</div></div>
                           <div className="tp-c"><div className="tp-cl">Risk of Skipping</div><div className="tp-ct">{tp.risk}</div></div>
                         </div>
-                        <div className="tp-pair"><div className="tp-cl">💡 Pair With</div><div className="tp-ct">{tp.pair}</div></div>
+                        <div className="tp-pair"><div className="tp-cl">  Pair With</div><div className="tp-ct">{tp.pair}</div></div>
                         {s2Notes[part.id] && <div className="tp-tech-note">Lead tech note: {s2Notes[part.id]}</div>}
                       </>
                     ) : null}
@@ -1569,20 +1569,20 @@ return (
 
           <div className="total-row">
             <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#2a3a4a"}}>Total Parts Est.</span>
-            <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:3,color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"—"}</span>
+            <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:3,color:"#4caf50"}}>{totalParts>0?`$${totalParts.toLocaleString()}`:"-"}</span>
           </div>
 
-          {/* ── PUSH TO SHOPMONKEY ── */}
+          {/* -- PUSH TO SHOPMONKEY -- */}
           <div style={{marginTop:24,background:"#1a2230",borderRadius:8,padding:20}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:8}}>
               <div>
                 <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:11,letterSpacing:3,color:"#ffffff",marginBottom:3}}>PUSH TO SHOPMONKEY</div>
                 <div style={{fontSize:9,color:"#8899aa",letterSpacing:1}}>
-                  {demoMode ? "Demo mode — simulates sub-line item creation" : `Live — targeting RO ${roInfo.ro}`}
+                  {demoMode ? "Demo mode - simulates sub-line item creation" : `Live - targeting RO ${roInfo.ro}`}
                 </div>
                 {targetLineId && serviceLines.length > 0 && (
                   <div style={{marginTop:6,fontSize:10,color:"#22aa55",fontWeight:600}}>
-                    ✓ Target line: {serviceLines.find(l=>l.id===targetLineId)?.name}
+                      Target line: {serviceLines.find(l=>l.id===targetLineId)?.name}
                   </div>
                 )}
                 {!targetLineId && (
@@ -1610,19 +1610,19 @@ return (
                     opacity:(pushState==="loading")?0.7:1
                   }}
                 >
-                  {pushState==="idle"&&"Push to Work Order →"}
+                  {pushState==="idle"&&"Push to Work Order  "}
                   {pushState==="loading"&&"Pushing..."}
-                  {pushState==="success"&&"✓ Added to Work Order"}
-                  {pushState==="error"&&"⚠ Some Items Failed"}
+                  {pushState==="success"&&"  Added to Work Order"}
+                  {pushState==="error"&&"  Some Items Failed"}
                 </button>
               </div>
             </div>
 
-            {/* ── LINE PICKER (no match found) ── */}
+            {/* -- LINE PICKER (no match found) -- */}
             {showLinePicker && serviceLines.length > 0 && (
               <div style={{marginBottom:16,background:"#0d1520",borderRadius:6,padding:16,border:"2px solid #ff9800"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                  <span style={{fontSize:16}}>{"⚠"}</span>
+                  <span style={{fontSize:16}}>{" "}</span>
                   <div>
                     <div style={{fontSize:11,color:"#ff9800",fontWeight:700,marginBottom:2}}>No matching service line found</div>
                     <div style={{fontSize:10,color:"#6a7a8a"}}>No line contains "overhaul" or "installation of transmission". Select the correct line below:</div>
@@ -1649,7 +1649,7 @@ return (
                       {line.labor > 0 && (
                         <div style={{fontSize:12,color:"#7a8a9a",fontFamily:"'Orbitron',sans-serif",flexShrink:0}}>${line.labor.toLocaleString()}</div>
                       )}
-                      <div style={{fontSize:12,color:"#3a4a5a",flexShrink:0}}>→</div>
+                      <div style={{fontSize:12,color:"#3a4a5a",flexShrink:0}}> </div>
                     </button>
                   ))}
                 </div>
@@ -1660,16 +1660,16 @@ return (
               </div>
             )}
 
-            {/* ── PUSH LOG ── */}
+            {/* -- PUSH LOG -- */}
             {pushLog.length > 0 && (
               <div style={{borderTop:"1px solid #2a3a4a",paddingTop:14}}>
                 <div style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"#6a7a8a",marginBottom:10,fontWeight:600}}>
-                  Push Log — {pushLog[0]?.line && <span style={{color:"#ff6b35"}}>{pushLog[0].line}</span>}
+                  Push Log - {pushLog[0]?.line && <span style={{color:"#ff6b35"}}>{pushLog[0].line}</span>}
                 </div>
                 <div style={{maxHeight:220,overflowY:"auto",display:"flex",flexDirection:"column",gap:5}}>
                   {pushLog.map((l,i)=>(
                     <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"7px 10px",background:"#0d1520",borderRadius:4,borderLeft:`3px solid ${l.status==="success"?"#22aa55":"#f44336"}`}}>
-                      <span style={{fontSize:11,color:l.status==="success"?"#22aa55":"#f44336",flexShrink:0}}>{l.status==="success"?"✓":"✗"}</span>
+                      <span style={{fontSize:11,color:l.status==="success"?"#22aa55":"#f44336",flexShrink:0}}>{l.status==="success"?" ":" "}</span>
                       <span style={{flex:1,fontSize:11,color:"#c0ccd8"}}>{l.name}</span>
                       <span style={{fontSize:9,color:"#4a5a6a",fontFamily:"'Share Tech Mono',monospace"}}>{l.id}</span>
                     </div>
@@ -1677,7 +1677,7 @@ return (
                 </div>
                 {pushState==="success" && (
                   <div style={{marginTop:12,padding:"10px 14px",background:"#22aa5522",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:700,textAlign:"center"}}>
-                    ✓ {pushLog.length} part{pushLog.length!==1?"s":""} added as sub-line items under "{pushLog[0]?.line}" in {demoMode?"demo ":""}Shopmonkey
+                      {pushLog.length} part{pushLog.length!==1?"s":""} added as sub-line items under "{pushLog[0]?.line}" in {demoMode?"demo ":""}Shopmonkey
                   </div>
                 )}
               </div>
@@ -1688,7 +1688,7 @@ return (
     </div>
   )}
 
-  {/* ── SETTINGS SCREEN ───────────────────────────────────────────── */}
+  {/* -- SETTINGS SCREEN --------------------------------------------- */}
   {screen === "settings" && (
     <div className="pg">
       <div className="section-title">Settings & Shopmonkey API</div>
@@ -1701,15 +1701,15 @@ return (
           <button
             onClick={()=>setDemoMode(true)}
             style={{flex:1,padding:"12px",border:`2px solid ${demoMode?"#ff9800":"#d0d8e0"}`,borderRadius:5,background:demoMode?"#fff8f0":"#f5f8fb",color:demoMode?"#ff9800":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
-          >🔵 Demo Mode</button>
+          >  Demo Mode</button>
           <button
             onClick={()=>setDemoMode(false)}
             style={{flex:1,padding:"12px",border:`2px solid ${!demoMode?"#22aa55":"#d0d8e0"}`,borderRadius:5,background:!demoMode?"#f0fff5":"#f5f8fb",color:!demoMode?"#22aa55":"#4a5a6a",fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,cursor:"pointer",fontWeight:700}}
-          >🟢 Live Mode</button>
+          >  Live Mode</button>
         </div>
         {demoMode && (
           <div style={{marginTop:12,padding:"10px 14px",background:"#fff8f0",border:"1px solid #ffcc80",borderRadius:4,fontSize:11,color:"#e65100"}}>
-            Demo mode uses simulated data. RO lookup and push are fully functional for testing — no real Shopmonkey data is accessed.
+            Demo mode uses simulated data. RO lookup and push are fully functional for testing - no real Shopmonkey data is accessed.
           </div>
         )}
       </div>
@@ -1735,13 +1735,13 @@ return (
               try {
                 const res = await fetch(`${relayUrl.replace(/\/$/,"")}/health`);
                 const d = await res.json();
-                alert(`✓ Relay connected!\n\n${JSON.stringify(d,null,2)}`);
+                alert(`  Relay connected!\n\n${JSON.stringify(d,null,2)}`);
               } catch(e) {
-                alert(`✗ Could not reach relay:\n${e.message}`);
+                alert(`  Could not reach relay:\n${e.message}`);
               }
             }}
             style={{marginTop:10,padding:"8px 16px",background:"#1a2230",border:"none",borderRadius:4,color:"#fff",fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:1,cursor:"pointer"}}
-          >Test Connection →</button>
+          >Test Connection  </button>
         )}
       </div>
 
@@ -1749,7 +1749,7 @@ return (
       <div style={{background:"#ffffff",border:"2px solid #d0d8e0",borderRadius:8,padding:20,marginBottom:16,boxShadow:"0 1px 4px rgba(0,0,0,0.07)"}}>
         <div style={{fontSize:11,fontWeight:700,color:"#1a2230",marginBottom:4,letterSpacing:1}}>Shopmonkey API Key</div>
         <div style={{fontSize:11,color:"#7a8a9a",marginBottom:16}}>
-          Required for live mode. Create a restricted key in Shopmonkey → Settings → Integrations → API with <strong>Work Orders (read)</strong> and <strong>Line Items (write)</strong> permissions only.
+          Required for live mode. Create a restricted key in Shopmonkey   Settings   Integrations   API with <strong>Work Orders (read)</strong> and <strong>Line Items (write)</strong> permissions only.
         </div>
         <div className="fld">
           <label className="flbl">API Key</label>
@@ -1763,7 +1763,7 @@ return (
         </div>
         {apiKey && (
           <div style={{marginTop:10,padding:"8px 12px",background:"#f0fff5",border:"1px solid #22aa55",borderRadius:4,fontSize:11,color:"#22aa55",fontWeight:600}}>
-            ✓ API key saved — switch to Live Mode to activate
+              API key saved - switch to Live Mode to activate
           </div>
         )}
       </div>
