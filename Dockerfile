@@ -3,12 +3,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 COPY package.json ./
+COPY .npmrc ./
 
-RUN npm install --legacy-peer-deps 2>&1 || (cat /root/.npm/_logs/*.log && exit 1)
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 COPY . .
 
-RUN npm run build
+RUN npx vite build
 
 EXPOSE 3000
 
