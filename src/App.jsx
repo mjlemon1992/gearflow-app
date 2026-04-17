@@ -836,7 +836,7 @@ if (demoMode) {
     log.push({
       name: part.name,
       status: "success",
-      id: `DEMO-${Math.random().toString(36).slice(2,8).toUpperCase()}`,
+     id: `DEMO-${Math.random().toString(36).slice(2,8).toUpperCase()}`,
       line: targetLine.name,
     });
     setPushLog([...log]);
