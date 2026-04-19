@@ -10,23 +10,31 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Fix special characters in App.jsx
+      - name: Fix App.jsx
         run: |
-          python3 -c "
-          data = open('src/App.jsx', 'rb').read()
-          data = data.replace(b'\xe2\x80\x9c', b'\"')
-          data = data.replace(b'\xe2\x80\x9d', b'\"')
-          data = data.replace(b'\xe2\x80\x98', b\"'\")
-          data = data.replace(b'\xe2\x80\x99', b\"'\")
+          python3 << 'PYEOF'
+          with open('src/App.jsx', 'rb') as f:
+              data = f.read()
+          data = data.replace(b'\xe2\x80\x9c', b'"')
+          data = data.replace(b'\xe2\x80\x9d', b'"')
+          data = data.replace(b'\xe2\x80\x98', b"'")
+          data = data.replace(b'\xe2\x80\x99', b"'")
           data = data.replace(b'\xe2\x80\x94', b'-')
           data = data.replace(b'\xe2\x80\x93', b'-')
           data = data.replace(b'\xe2\x80\xa6', b'...')
-          open('src/App.jsx', 'wb').write(data)
+          data = data.replace(b'\xef\xb8\x8f', b'')
+          data = data.replace(b'\xe2\x94\x80', b'-')
+          # Fix corrupted backtick in style block - replace ``` with real backtick
+          data = data.replace(b'<style>{```', b'<style>{`')
+          data = data.replace(b'```}</style>', b'`}</style>')
+          with open('src/App.jsx', 'wb') as f:
+              f.write(data)
           print('Fixed', len(data), 'bytes')
-          "
+          PYEOF
       - run: npm install --legacy-peer-deps
-      - run: npm run build
-      - run: |
+      - run: CI=false npm run build
+      - name: Commit build
+        run: |
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add build/ -f
