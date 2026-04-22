@@ -18,4 +18,6 @@ app.listen(PORT, "0.0.0.0", function() {
   console.log("GearFlow running on port " + PORT);
 });
 
-nano ~/gearflow-app/server.js
+
+
+
