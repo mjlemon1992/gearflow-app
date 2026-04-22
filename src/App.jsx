@@ -694,11 +694,21 @@ const DEMO_ROS = {
   "RO-1011": { vehicle:"2016 Jeep Wrangler 3.6L",            year:"2016", trans:"MANUAL_TRANS"  },
 };
 
+// --- PIN CONFIG ---------------------------------------------------------------
+const APP_PIN   = "1234";   // tech access PIN
+const ADMIN_PIN = "9999";   // admin/settings PIN
+
 // --- MAIN APP ----------------------------------------------------------------
 export default function TransmissionApp() {
   const [screen, setScreen]         = useState("ro");    // ro | stage1 | stage2 | advisor | settings
   const [roInfo, setRoInfo]         = useState({ ro:"", vehicle:"", year:"", trans:"68RFE" });
   const [techInitials, setTechInitials] = useState("");
+
+  // PIN lock
+  const [pinUnlocked, setPinUnlocked] = useState(false);
+  const [pinInput, setPinInput]       = useState("");
+  const [pinError, setPinError]       = useState(false);
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
 
   // Shopmonkey integration
   const [apiDebug, setApiDebug]     = useState(null); // raw API response for debugging
@@ -929,6 +939,55 @@ export default function TransmissionApp() {
     setLoadingTp(p => ({...p, [part.id]: false}));
   };
 
+  // -- PIN SCREEN ------------------------------------------------------------
+  const handlePin = (digit) => {
+    const next = pinInput + digit;
+    setPinInput(next);
+    if (next.length === 4) {
+      if (next === APP_PIN) { setPinUnlocked(true); setPinError(false); }
+      else { setPinError(true); setTimeout(() => { setPinInput(""); setPinError(false); }, 800); return; }
+      setPinInput("");
+    }
+  };
+
+  const handleAdminPin = (digit) => {
+    const next = pinInput + digit;
+    setPinInput(next);
+    if (next.length === 4) {
+      if (next === ADMIN_PIN) { setAdminUnlocked(true); setPinError(false); setScreen("settings"); }
+      else { setPinError(true); setTimeout(() => { setPinInput(""); setPinError(false); }, 800); return; }
+      setPinInput("");
+    }
+  };
+
+  if (!pinUnlocked) {
+    return (
+      <div style={{minHeight:"100vh",background:"#1a2230",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Share Tech Mono','Courier New',monospace"}}>
+        <div style={{textAlign:"center",padding:40}}>
+          <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:28,letterSpacing:6,color:"#fff",marginBottom:4}}>GEAR<span style={{color:"#ff6b35"}}>FLOW</span></div>
+          <div style={{color:"#8899aa",fontSize:11,letterSpacing:3,marginBottom:40}}>MISTER TRANSMISSION</div>
+          <div style={{background:"#111920",borderRadius:12,padding:32,minWidth:280,boxShadow:"0 8px 40px rgba(0,0,0,0.4)"}}>
+            <div style={{color:"#8899aa",fontSize:11,letterSpacing:3,marginBottom:20}}>ENTER PIN</div>
+            <div style={{display:"flex",gap:12,justifyContent:"center",marginBottom:28}}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{width:18,height:18,borderRadius:"50%",background: i < pinInput.length ? (pinError ? "#f44336" : "#ff6b35") : "#2a3a4a",transition:"all .15s"}}/>
+              ))}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+              {[1,2,3,4,5,6,7,8,9,"",0,"DEL"].map((d,i) => (
+                <button key={i} onClick={() => { if(d==="DEL"){setPinInput(p=>p.slice(0,-1));}else if(d!==""){handlePin(String(d));}}}
+                  style={{padding:"16px 0",background: d==="" ? "transparent" : "#1e2d3d",border:"none",borderRadius:8,color:"#fff",fontSize:18,cursor: d==="" ? "default" : "pointer",fontFamily:"inherit",transition:"background .1s"}}
+                  onMouseOver={e=>{if(d!=="")e.target.style.background="#2a3a4a"}}
+                  onMouseOut={e=>{if(d!=="")e.target.style.background="#1e2d3d"}}
+                >{d}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // -- SCREENS ---------------------------------------------------------------
   return (
     <div style={{ fontFamily:"'Share Tech Mono','Courier New',monospace", background:"#e8edf2", minHeight:"100vh", color:"#1a2230" }}>
@@ -1123,9 +1182,33 @@ export default function TransmissionApp() {
           <button className={"nb " + (screen==="stage1"?"on":"") + ""} onClick={()=>setScreen("stage1")} disabled={!roInfo.ro}>S1: Removal</button>
           <button className={"nb " + (screen==="stage2"?"on":"") + ""} onClick={()=>setScreen("stage2")} disabled={!s1Signed}>S2: Strip</button>
           <button className={"nb " + (screen==="advisor"?"on":"") + ""} onClick={()=>setScreen("advisor")} disabled={!s2Signed}>Advisor</button>
-          <button className={"nb " + (screen==="settings"?"on":"") + ""} onClick={()=>setScreen("settings")}>⚙</button>
+          <button className={"nb " + (screen==="settings"?"on":"") + ""} onClick={()=>{ if(adminUnlocked){setScreen("settings");}else{setPinInput("");setScreen("adminpin");}}} >⚙</button>
         </div>
       </div>
+
+      {/* -- ADMIN PIN SCREEN -------------------------------------------- */}
+      {screen === "adminpin" && (
+        <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{textAlign:"center",padding:40}}>
+            <div style={{color:"#8899aa",fontSize:11,letterSpacing:3,marginBottom:20}}>ADMIN PIN REQUIRED</div>
+            <div style={{background:"#1a2230",borderRadius:12,padding:32,minWidth:280,boxShadow:"0 8px 40px rgba(0,0,0,0.2)"}}>
+              <div style={{display:"flex",gap:12,justifyContent:"center",marginBottom:28}}>
+                {[0,1,2,3].map(i => (
+                  <div key={i} style={{width:18,height:18,borderRadius:"50%",background: i < pinInput.length ? (pinError ? "#f44336" : "#ff6b35") : "#2a3a4a",transition:"all .15s"}}/>
+                ))}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                {[1,2,3,4,5,6,7,8,9,"",0,"DEL"].map((d,i) => (
+                  <button key={i} onClick={() => { if(d==="DEL"){setPinInput(p=>p.slice(0,-1));}else if(d!==""){handleAdminPin(String(d));}}}
+                    style={{padding:"16px 0",background: d==="" ? "transparent" : "#1e2d3d",border:"none",borderRadius:8,color:"#fff",fontSize:18,cursor: d==="" ? "default" : "pointer",fontFamily:"inherit"}}
+                  >{d}</button>
+                ))}
+              </div>
+              <button onClick={()=>setScreen("ro")} style={{marginTop:16,background:"transparent",border:"none",color:"#8899aa",cursor:"pointer",fontSize:11,letterSpacing:2}}>CANCEL</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* -- RO SCREEN --------------------------------------------------- */}
       {screen === "ro" && (
