@@ -620,11 +620,11 @@ export default function App() {
       {/* HEADER */}
       <div className="hdr">
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div className="logo">GEAR<span>FLOW</span></div>
+          <div className="logo" style={{ cursor: "pointer" }} onClick={() => setTab("ro")}>GEAR<span>FLOW</span></div>
           <span className="live-badge">LIVE</span>
         </div>
         <div className="nav">
-          <button className={"nb " + (tab === "ro" ? "on" : "")} onClick={() => setTab("ro")}>RO</button>
+          <button className={"nb " + (tab === "ro" ? "on" : "")} onClick={() => setTab("ro")}>🏠 RO</button>
           <button className={"nb " + (tab === "stage1" ? "on" : "")} onClick={() => setTab("stage1")} disabled={!ro.ro}>S1: Removal</button>
           <button className={"nb " + (tab === "stage2" ? "on" : "")} onClick={() => setTab("stage2")} disabled={!stage1Done}>S2: Strip</button>
           <button className={"nb " + (tab === "advisor" ? "on" : "")} onClick={() => setTab("advisor")} disabled={!stage2Done}>Advisor</button>
