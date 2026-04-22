@@ -441,7 +441,7 @@ export default function App() {
     }
   };
 
-  // ── Push parts to Shopmonkey
+  // ── Push parts + findings to Shopmonkey (combined)
   const pushToShopmonkey = async (forceServiceId = null) => {
     setPushStatus("loading");
     setPushItems([]);
@@ -453,6 +453,35 @@ export default function App() {
     ];
 
     try {
+      // Step 1: Push findings as Recommendations line if there are any
+      const results = [];
+      if (flaggedFindings.length > 0 && ro.orderId) {
+        try {
+          const findingsBody = flaggedFindings.map(c => ({
+            label: c.label,
+            status: findings[c.id].status,
+            note: findings[c.id].note || ""
+          }));
+          const fRes = await fetch(relay() + "/api/order/" + ro.orderId + "/recommendations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ findings: findingsBody })
+          });
+          const fData = await fRes.json();
+          results.push({
+            name: "Recommendations — " + flaggedFindings.length + " finding" + (flaggedFindings.length !== 1 ? "s" : ""),
+            status: fData.ok ? "success" : "error",
+            id: fData.serviceId || fData.message || "-",
+            line: "Recommendations - Removal Inspection"
+          });
+          setPushItems([...results]);
+        } catch (e) {
+          results.push({ name: "Recommendations push failed", status: "error", id: e.message, line: "" });
+          setPushItems([...results]);
+        }
+      }
+
+      // Step 2: Push parts to work order service line
       const svcRes = await fetch(relay() + "/api/order/" + ro.orderId + "/services");
       const svcData = await svcRes.json();
       setServices(svcData.services || []);
@@ -469,7 +498,6 @@ export default function App() {
       }
 
       setTargetServiceId(svc?.id);
-      const results = [];
       for (const p of allParts) {
         try {
           const r = await fetch(relay() + "/api/order/" + ro.orderId + "/service/" + svc.id + "/part", {
@@ -603,21 +631,42 @@ export default function App() {
         <div className="pg">
           <div className="section-title">New / Resume Service Order</div>
 
-          {/* Saved ROs */}
+          {/* Saved ROs - prominent cards */}
           {savedRos.length > 0 && (
-            <div className="saved-ros">
-              <div className="saved-ros-title">Resume Previous RO</div>
-              {savedRos.slice(0, 6).map(r => {
-                const stageColors = { ro: "#7a8a9a", stage1: "#ff9800", stage2: "#4fc3f7", advisor: "#22aa55" };
-                return (
-                  <div key={r.roNumber} className="ro-row" onClick={() => loadRoFromRelay(r.roNumber)}>
-                    <span className="ro-row-num">{r.roNumber}</span>
-                    <span className="ro-row-veh">{r.vehicle || "—"}</span>
-                    <span className="ro-row-stage" style={{ background: (stageColors[r.stage] || "#7a8a9a") + "22", color: stageColors[r.stage] || "#7a8a9a" }}>{r.stage?.toUpperCase()}</span>
-                    <span className="ro-row-time">{new Date(r.updatedAt).toLocaleDateString()}</span>
-                  </div>
-                );
-              })}
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 11, letterSpacing: 4, color: "#ff6b35", textTransform: "uppercase", marginBottom: 12, paddingBottom: 8, borderBottom: "2px solid #d0d8e0" }}>
+                Active Work Orders
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 10 }}>
+                {savedRos.map(r => {
+                  const stageColors = { ro: "#7a8a9a", stage1: "#ff9800", stage2: "#4fc3f7", advisor: "#22aa55" };
+                  const stageLabels = { ro: "RO Entry", stage1: "Stage 1 — Removal", stage2: "Stage 2 — Strip", advisor: "Advisor" };
+                  const sc = stageColors[r.stage] || "#7a8a9a";
+                  const td = ALL_TRANS[r.trans];
+                  return (
+                    <div key={r.roNumber} onClick={() => loadRoFromRelay(r.roNumber)}
+                      style={{ background: "#fff", border: "2px solid " + sc, borderRadius: 8, padding: 16, cursor: "pointer", transition: "all .15s", boxShadow: "0 2px 8px rgba(0,0,0,.08)" }}
+                      onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                      onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 13, color: "#ff6b35", fontWeight: 700 }}>{r.roNumber}</span>
+                        <span style={{ fontSize: 8, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, background: sc + "22", color: sc, fontWeight: 700 }}>{stageLabels[r.stage] || r.stage}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#1a2230", fontWeight: 600, marginBottom: 4 }}>{r.vehicle || "Vehicle not set"}</div>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <span style={{ fontSize: 10, color: MAKE_COLORS[td?.make] || "#888", fontWeight: 600 }}>{td?.label || r.trans}</span>
+                        <span style={{ fontSize: 9, color: "#aabbcc" }}>{new Date(r.updatedAt).toLocaleDateString()} {new Date(r.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                      </div>
+                      <div style={{ marginTop: 10, width: "100%", height: 4, background: "#f0f4f8", borderRadius: 2 }}>
+                        <div style={{ height: 4, borderRadius: 2, background: sc, width: r.stage === "ro" ? "10%" : r.stage === "stage1" ? "35%" : r.stage === "stage2" ? "65%" : "100%", transition: "width .3s" }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ marginTop: 8, fontSize: 9, color: "#aabbcc", letterSpacing: 1, textAlign: "right" }}>
+                {loadingRos ? "Loading..." : savedRos.length + " active RO" + (savedRos.length !== 1 ? "s" : "") + " — tap to resume"}
+              </div>
             </div>
           )}
 
@@ -992,14 +1041,16 @@ export default function App() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
                   <div>
                     <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 11, letterSpacing: 3, color: "#fff", marginBottom: 3 }}>PUSH TO SHOPMONKEY</div>
-                    <div style={{ fontSize: 9, color: "#8899aa", letterSpacing: 1 }}>Targeting RO {ro.ro}</div>
+                    <div style={{ fontSize: 9, color: "#8899aa", letterSpacing: 1 }}>
+                      Targeting RO {ro.ro} · Sends parts + {flaggedFindings.length} recommendation{flaggedFindings.length !== 1 ? "s" : ""}
+                    </div>
                   </div>
                   <button onClick={() => pushToShopmonkey()}
                     disabled={pushStatus === "loading" || pushStatus === "success" || (chosenParts.length === 0 && stage2CustomRows.filter(r => r.name).length === 0)}
                     style={{ padding: "12px 24px", border: "none", borderRadius: 5, fontFamily: "'Orbitron',sans-serif", fontSize: 10, letterSpacing: 3, fontWeight: 700, cursor: "pointer", background: pushStatus === "success" ? "#22aa55" : pushStatus === "error" ? "#f44336" : "#ff6b35", color: "#fff", opacity: pushStatus === "loading" ? .7 : 1 }}>
-                    {pushStatus === "idle" && "Push to Work Order →"}
+                    {pushStatus === "idle" && "Push Parts + Findings →"}
                     {pushStatus === "loading" && "Pushing..."}
-                    {pushStatus === "success" && "✓ Added to Work Order"}
+                    {pushStatus === "success" && "✓ Pushed to Work Order"}
                     {pushStatus === "error" && "⚠ Some Items Failed"}
                   </button>
                 </div>
