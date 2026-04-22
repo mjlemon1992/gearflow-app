@@ -24,6 +24,22 @@ jobs:
           PYEOF
       - run: npm install --legacy-peer-deps
       - run: CI=false npm run build
+      - name: Inject PWA tags into index.html
+        run: |
+          python3 << 'PYEOF'
+          with open('build/index.html', 'r') as f:
+              html = f.read()
+          pwa_tags = '''    <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta name="apple-mobile-web-app-title" content="GearFlow" />
+      <meta name="theme-color" content="#1a2230" />
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="apple-touch-icon" href="/gf-icon-192.png" />'''
+          html = html.replace('<title>GearFlow</title>', pwa_tags + '\n    <title>GearFlow</title>')
+          with open('build/index.html', 'w') as f:
+              f.write(html)
+          print('PWA tags injected')
+          PYEOF
       - name: Commit build
         run: |
           git config user.email "action@github.com"
