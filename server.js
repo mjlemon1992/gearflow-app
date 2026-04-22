@@ -10,9 +10,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("*", function(req, res) {
+  res.set("Cache-Control", "no-store");
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.listen(PORT, "0.0.0.0", function() {
   console.log("GearFlow running on port " + PORT);
 });
+
+nano ~/gearflow-app/server.js
