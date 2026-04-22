@@ -799,21 +799,15 @@ export default function App() {
               );
             })}
 
-            {/* Push findings to Shopmonkey */}
-            {flaggedFindings.length > 0 && ro.orderId && (
-              <div style={{ background: "#fff", border: "2px solid #ce93d8", borderRadius: 6, padding: 14, marginTop: 16 }}>
-                <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#ce93d8", fontWeight: 700, marginBottom: 8 }}>Push Findings to Shopmonkey</div>
-                <div style={{ fontSize: 11, color: "#4a5a6a", marginBottom: 10 }}>
-                  {flaggedFindings.length} flagged item{flaggedFindings.length !== 1 ? "s" : ""} will be added as a "Recommendations" service line on RO {ro.ro}.
+            {/* Findings summary - pushed via Advisor */}
+            {flaggedFindings.length > 0 && (
+              <div style={{ background: "#fff8f5", border: "2px solid #ff6b35", borderRadius: 6, padding: 14, marginTop: 16 }}>
+                <div style={{ fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "#ff6b35", fontWeight: 700, marginBottom: 6 }}>
+                  {flaggedFindings.length} Finding{flaggedFindings.length !== 1 ? "s" : ""} Flagged
                 </div>
-                <button className={"push-findings-btn " + (findingsPushStatus === "success" ? "done" : "")}
-                  disabled={findingsPushStatus === "loading" || findingsPushStatus === "success"}
-                  onClick={pushFindings}>
-                  {findingsPushStatus === "idle" && "Push Recommendations to Shopmonkey →"}
-                  {findingsPushStatus === "loading" && "Pushing..."}
-                  {findingsPushStatus === "success" && "✓ Recommendations Added to Work Order"}
-                  {findingsPushStatus === "error" && "⚠ Push Failed — Retry"}
-                </button>
+                <div style={{ fontSize: 11, color: "#4a5a6a" }}>
+                  These will be pushed to Shopmonkey as Recommendations when the Advisor sends the work order.
+                </div>
               </div>
             )}
 
