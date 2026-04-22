@@ -442,38 +442,27 @@ export default function App() {
   };
 
   // ── Push parts + findings to Shopmonkey (combined)
-  const pushToShopmonkey = async (forceServiceId = null) => {
+  const pushToShopmonkey = async () => {
     setPushStatus("loading");
     setPushItems([]);
     setShowServicePicker(false);
 
     const allParts = [
-      ...chosenParts.map(p => ({ name: p.name, partNum: p.part !== "-" ? p.part : "", price: getPrice(p), supplier: p.supplier !== "-" ? p.supplier : "" })),
-      ...[...stage1CustomRows, ...stage2CustomRows].filter(r => r.name).map(r => ({ name: r.name, partNum: r.part || "", price: parseFloat(r.price) || 0, supplier: r.supplier || "" }))
+      ...chosenParts.map(p => ({ name: p.name, partNumber: p.part !== "-" ? p.part : "", retailPrice: getPrice(p), supplier: p.supplier !== "-" ? p.supplier : "" })),
+      ...[...stage1CustomRows, ...stage2CustomRows].filter(r => r.name).map(r => ({ name: r.name, partNumber: r.part || "", retailPrice: parseFloat(r.price) || 0, supplier: r.supplier || "" }))
     ];
 
+    const results = [];
     try {
-      // Step 1: Push findings as Recommendations line if there are any
-      const results = [];
       if (flaggedFindings.length > 0 && ro.orderId) {
         try {
-          const findingsBody = flaggedFindings.map(c => ({
-            label: c.label,
-            status: findings[c.id].status,
-            note: findings[c.id].note || ""
-          }));
+          const findingsBody = flaggedFindings.map(c => ({ label: c.label, status: findings[c.id].status, note: findings[c.id].note || "" }));
           const fRes = await fetch(relay() + "/api/order/" + ro.orderId + "/recommendations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ findings: findingsBody })
           });
           const fData = await fRes.json();
-          results.push({
-            name: "Recommendations — " + flaggedFindings.length + " finding" + (flaggedFindings.length !== 1 ? "s" : ""),
-            status: fData.ok ? "success" : "error",
-            id: fData.serviceId || fData.message || "-",
-            line: "Recommendations - Removal Inspection"
-          });
+          results.push({ name: "Recommendations - " + flaggedFindings.length + " finding" + (flaggedFindings.length !== 1 ? "s" : ""), status: fData.ok ? "success" : "error", id: fData.serviceId || "-", line: "Recommendations - Removal Inspection" });
           setPushItems([...results]);
         } catch (e) {
           results.push({ name: "Recommendations push failed", status: "error", id: e.message, line: "" });
@@ -481,34 +470,18 @@ export default function App() {
         }
       }
 
-      // Step 2: Push parts to work order service line
-      const svcRes = await fetch(relay() + "/api/order/" + ro.orderId + "/services");
-      const svcData = await svcRes.json();
-      setServices(svcData.services || []);
-
-      const keyword = ["overhaul", "installation of transmission"];
-      let svc = forceServiceId
-        ? (svcData.services || []).find(s => s.id === forceServiceId)
-        : (svcData.services || []).find(s => keyword.some(k => s.name.toLowerCase().includes(k)));
-
-      if (!svc && !forceServiceId) {
-        setShowServicePicker(true);
-        setPushStatus("idle");
-        return;
-      }
-
-      setTargetServiceId(svc?.id);
-      for (const p of allParts) {
-        try {
-          const r = await fetch(relay() + "/api/order/" + ro.orderId + "/service/" + svc.id + "/part", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: p.name, partNumber: p.partNum, retailPrice: p.price, quantity: 1, note: "Supplier: " + (p.supplier || "-") + " | GearFlow" })
-          });
-          const d = await r.json();
-          results.push({ name: p.name, status: d.success ? "success" : "error", id: d.data?.id || d.message || "-", line: svc.name });
-        } catch (e) {
-          results.push({ name: p.name, status: "error", id: e.message, line: svc?.name || "" });
+      if (allParts.length > 0) {
+        const pRes = await fetch(relay() + "/api/order/" + ro.orderId + "/push-parts", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ parts: allParts })
+        });
+        const pData = await pRes.json();
+        if (pData.ok) {
+          for (const r of pData.results) {
+            results.push({ name: r.name, status: r.success ? "success" : "error", id: "-", line: pData.serviceName || "Overhaul Transmission" });
+          }
+        } else {
+          results.push({ name: "Parts push failed", status: "error", id: pData.message || "-", line: "" });
         }
         setPushItems([...results]);
       }
