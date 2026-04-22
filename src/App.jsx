@@ -296,6 +296,10 @@ export default function App() {
   // ── Load saved ROs on mount
   useEffect(() => {
     if (relayUrl) loadSavedRos();
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
   }, [relayUrl]);
 
   const relay = () => relayUrl.replace(/\/$/, "");
@@ -442,38 +446,29 @@ export default function App() {
   };
 
   // ── Push parts + findings to Shopmonkey (combined)
-  const pushToShopmonkey = async (forceServiceId = null) => {
+  const pushToShopmonkey = async () => {
     setPushStatus("loading");
     setPushItems([]);
     setShowServicePicker(false);
 
     const allParts = [
-      ...chosenParts.map(p => ({ name: p.name, partNum: p.part !== "-" ? p.part : "", price: getPrice(p), supplier: p.supplier !== "-" ? p.supplier : "" })),
-      ...[...stage1CustomRows, ...stage2CustomRows].filter(r => r.name).map(r => ({ name: r.name, partNum: r.part || "", price: parseFloat(r.price) || 0, supplier: r.supplier || "" }))
+      ...chosenParts.map(p => ({ name: p.name, partNumber: p.part !== "-" ? p.part : "", retailPrice: getPrice(p), supplier: p.supplier !== "-" ? p.supplier : "" })),
+      ...[...stage1CustomRows, ...stage2CustomRows].filter(r => r.name).map(r => ({ name: r.name, partNumber: r.part || "", retailPrice: parseFloat(r.price) || 0, supplier: r.supplier || "" }))
     ];
 
+    const results = [];
+
     try {
-      // Step 1: Push findings as Recommendations line if there are any
-      const results = [];
+      // Step 1: Push findings as Recommendations line
       if (flaggedFindings.length > 0 && ro.orderId) {
         try {
-          const findingsBody = flaggedFindings.map(c => ({
-            label: c.label,
-            status: findings[c.id].status,
-            note: findings[c.id].note || ""
-          }));
+          const findingsBody = flaggedFindings.map(c => ({ label: c.label, status: findings[c.id].status, note: findings[c.id].note || "" }));
           const fRes = await fetch(relay() + "/api/order/" + ro.orderId + "/recommendations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ findings: findingsBody })
           });
           const fData = await fRes.json();
-          results.push({
-            name: "Recommendations — " + flaggedFindings.length + " finding" + (flaggedFindings.length !== 1 ? "s" : ""),
-            status: fData.ok ? "success" : "error",
-            id: fData.serviceId || fData.message || "-",
-            line: "Recommendations - Removal Inspection"
-          });
+          results.push({ name: "Recommendations — " + flaggedFindings.length + " finding" + (flaggedFindings.length !== 1 ? "s" : ""), status: fData.ok ? "success" : "error", id: fData.serviceId || "-", line: "Recommendations - Removal Inspection" });
           setPushItems([...results]);
         } catch (e) {
           results.push({ name: "Recommendations push failed", status: "error", id: e.message, line: "" });
@@ -481,37 +476,23 @@ export default function App() {
         }
       }
 
-      // Step 2: Push parts to work order service line
-      const svcRes = await fetch(relay() + "/api/order/" + ro.orderId + "/services");
-      const svcData = await svcRes.json();
-      setServices(svcData.services || []);
-
-      const keyword = ["overhaul", "installation of transmission"];
-      let svc = forceServiceId
-        ? (svcData.services || []).find(s => s.id === forceServiceId)
-        : (svcData.services || []).find(s => keyword.some(k => s.name.toLowerCase().includes(k)));
-
-      if (!svc && !forceServiceId) {
-        setShowServicePicker(true);
-        setPushStatus("idle");
-        return;
-      }
-
-      setTargetServiceId(svc?.id);
-      for (const p of allParts) {
-        try {
-          const r = await fetch(relay() + "/api/order/" + ro.orderId + "/service/" + svc.id + "/part", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: p.name, partNumber: p.partNum, retailPrice: p.price, quantity: 1, note: "Supplier: " + (p.supplier || "-") + " | GearFlow" })
-          });
-          const d = await r.json();
-          results.push({ name: p.name, status: d.success ? "success" : "error", id: d.data?.id || d.message || "-", line: svc.name });
-        } catch (e) {
-          results.push({ name: p.name, status: "error", id: e.message, line: svc?.name || "" });
+      // Step 2: Push all parts — relay auto-creates "Overhaul Transmission" service line
+      if (allParts.length > 0) {
+        const pRes = await fetch(relay() + "/api/order/" + ro.orderId + "/push-parts", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ parts: allParts })
+        });
+        const pData = await pRes.json();
+        if (pData.ok) {
+          for (const r of pData.results) {
+            results.push({ name: r.name, status: r.success ? "success" : "error", id: "-", line: pData.serviceName || "Overhaul Transmission" });
+          }
+        } else {
+          results.push({ name: "Parts push failed", status: "error", id: pData.message || "-", line: "" });
         }
         setPushItems([...results]);
       }
+
       setPushStatus(results.every(r => r.status === "success") ? "success" : "error");
     } catch (e) {
       setPushStatus("error");
@@ -552,8 +533,33 @@ export default function App() {
   };
 
   // ── Stage sign-off helpers
-  const signStage1 = () => { setStage1Done(true); setTab("stage2"); saveRoToRelay({ stage: "stage2", stage1Done: true, stage1Initials }); };
-  const signStage2 = () => { setStage2Done(true); setTab("advisor"); saveRoToRelay({ stage: "advisor", stage2Done: true, stage2Initials }); };
+  const signStage1 = async () => {
+    setStage1Done(true);
+    setTab("stage2");
+    saveRoToRelay({ stage: "stage2", stage1Done: true, stage1Initials });
+    if (relayUrl && ro.orderId) {
+      try {
+        await fetch(relay() + "/api/order/" + ro.orderId + "/note", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ note: "GearFlow - Stage 1 Removal Inspection complete. Signed off by: " + stage1Initials + ". Findings: " + (flaggedFindings.length > 0 ? flaggedFindings.map(c => "[" + findings[c.id].status + "] " + c.label).join(", ") : "None") })
+        });
+      } catch (e) { /* ignore */ }
+    }
+  };
+
+  const signStage2 = async () => {
+    setStage2Done(true);
+    setTab("advisor");
+    saveRoToRelay({ stage: "advisor", stage2Done: true, stage2Initials });
+    if (relayUrl && ro.orderId) {
+      try {
+        await fetch(relay() + "/api/order/" + ro.orderId + "/note", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ note: "GearFlow - Stage 2 Strip Down complete. Signed off by: " + stage2Initials + ". Parts selected: " + chosenParts.length + " (" + chosenParts.map(p => p.name).join(", ") + ")" })
+        });
+      } catch (e) { /* ignore */ }
+    }
+  };
 
   // ── PIN SCREEN ────────────────────────────────────────────────────
   if (!pinUnlocked) {
@@ -1075,12 +1081,115 @@ export default function App() {
                     </div>
                     {pushStatus === "success" && (
                       <div style={{ marginTop: 12, padding: "10px 14px", background: "#22aa5522", border: "1px solid #22aa55", borderRadius: 4, fontSize: 11, color: "#22aa55", fontWeight: 700, textAlign: "center" }}>
-                        ✓ {pushItems.length} part{pushItems.length !== 1 ? "s" : ""} added to Shopmonkey
+                        ✓ {pushItems.length} item{pushItems.length !== 1 ? "s" : ""} added to Shopmonkey
                       </div>
                     )}
                   </div>
                 )}
               </div>
+
+              {/* ── QUOTE SHEET — appears automatically after successful push ── */}
+              {pushStatus === "success" && (
+                <div style={{ marginTop: 24, background: "#fff", border: "2px solid #d0d8e0", borderRadius: 8, overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,.1)" }} id="quote-sheet">
+                  {/* Header */}
+                  <div style={{ background: "#1a2230", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 20, letterSpacing: 4, color: "#fff" }}>GEAR<span style={{ color: "#ff6b35" }}>FLOW</span></div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, color: "#8899aa", marginTop: 3 }}>MISTER TRANSMISSION</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 14, color: "#ff6b35" }}>QUOTE</div>
+                      <div style={{ fontSize: 10, color: "#8899aa", marginTop: 2 }}>{new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}</div>
+                    </div>
+                  </div>
+
+                  {/* Vehicle & RO info */}
+                  <div style={{ padding: "16px 24px", borderBottom: "2px solid #f0f4f8", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 4 }}>Vehicle</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#1a2230" }}>{ro.vehicle || "—"}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 4 }}>RO Number</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "#1a2230" }}>{ro.ro}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 4 }}>Transmission</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: makeColor }}>{transDef.label}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 4 }}>Technicians</div>
+                      <div style={{ fontSize: 11, color: "#1a2230" }}>S1: <strong>{stage1Initials}</strong> &nbsp; S2: <strong>{stage2Initials}</strong></div>
+                    </div>
+                  </div>
+
+                  {/* Parts list */}
+                  <div style={{ padding: "16px 24px" }}>
+                    <div style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: "#ff6b35", fontWeight: 700, marginBottom: 12 }}>Parts — Overhaul Transmission</div>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "2px solid #e8edf2" }}>
+                          <th style={{ textAlign: "left", fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", padding: "6px 0", fontWeight: 600 }}>Part</th>
+                          <th style={{ textAlign: "left", fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", padding: "6px 0", fontWeight: 600 }}>Part #</th>
+                          <th style={{ textAlign: "left", fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", padding: "6px 0", fontWeight: 600 }}>Supplier</th>
+                          <th style={{ textAlign: "right", fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", padding: "6px 0", fontWeight: 600 }}>Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {chosenParts.map((part, i) => {
+                          const price = getPrice(part);
+                          return (
+                            <tr key={part.id} style={{ borderBottom: "1px solid #f0f4f8", background: i % 2 === 0 ? "#fff" : "#fafbfc" }}>
+                              <td style={{ padding: "8px 0", fontSize: 12, color: "#1a2230", fontWeight: 500 }}>{part.name}</td>
+                              <td style={{ padding: "8px 0", fontSize: 10, color: "#7a8a9a", fontFamily: "'Share Tech Mono',monospace" }}>{part.part !== "-" ? part.part : "—"}</td>
+                              <td style={{ padding: "8px 0", fontSize: 10, color: "#7a8a9a" }}>{part.supplier !== "-" ? part.supplier : "—"}</td>
+                              <td style={{ padding: "8px 0", fontSize: 12, color: price > 0 ? "#1a2230" : "#c0ccd8", textAlign: "right", fontWeight: price > 0 ? 700 : 400 }}>{price > 0 ? "$" + price.toLocaleString() : "—"}</td>
+                            </tr>
+                          );
+                        })}
+                        {[...stage1CustomRows, ...stage2CustomRows].filter(r => r.name).map((r, i) => (
+                          <tr key={"c" + i} style={{ borderBottom: "1px solid #f0f4f8", background: (chosenParts.length + i) % 2 === 0 ? "#fff" : "#fafbfc" }}>
+                            <td style={{ padding: "8px 0", fontSize: 12, color: "#1a2230", fontWeight: 500 }}>{r.name}</td>
+                            <td style={{ padding: "8px 0", fontSize: 10, color: "#7a8a9a", fontFamily: "'Share Tech Mono',monospace" }}>{r.part || "—"}</td>
+                            <td style={{ padding: "8px 0", fontSize: 10, color: "#7a8a9a" }}>{r.supplier || "—"}</td>
+                            <td style={{ padding: "8px 0", fontSize: 12, color: "#1a2230", textAlign: "right", fontWeight: 700 }}>{r.price ? "$" + parseFloat(r.price).toLocaleString() : "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Total */}
+                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 16, marginTop: 16, paddingTop: 14, borderTop: "2px solid #1a2230" }}>
+                      <span style={{ fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: "#4a5a6a", fontWeight: 600 }}>Estimated Parts Total</span>
+                      <span style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 24, letterSpacing: 2, color: "#1a2230", fontWeight: 800 }}>${totalPartsEst.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Recommendations */}
+                  {flaggedFindings.length > 0 && (
+                    <div style={{ padding: "16px 24px", borderTop: "2px solid #f0f4f8", background: "#fffbf8" }}>
+                      <div style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: "#ff6b35", fontWeight: 700, marginBottom: 10 }}>Recommendations — Removal Inspection</div>
+                      {flaggedFindings.map(c => (
+                        <div key={c.id} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 7, padding: "8px 10px", background: "#fff", borderRadius: 4, borderLeft: "3px solid " + (STATUS_COLORS[findings[c.id].status] || "#ccc") }}>
+                          <span style={{ fontSize: 9, letterSpacing: 1, textTransform: "uppercase", color: STATUS_COLORS[findings[c.id].status], fontWeight: 700, minWidth: 90, flexShrink: 0 }}>{findings[c.id].status}</span>
+                          <div>
+                            <div style={{ fontSize: 12, color: "#1a2230", fontWeight: 500 }}>{c.label}</div>
+                            {findings[c.id].note && <div style={{ fontSize: 10, color: "#7a8a9a", marginTop: 2 }}>{findings[c.id].note}</div>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Footer */}
+                  <div style={{ padding: "14px 24px", background: "#f5f8fb", borderTop: "2px solid #e8edf2", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ fontSize: 9, color: "#aabbcc", letterSpacing: 1 }}>Generated by GearFlow · {new Date().toLocaleString()}</div>
+                    <button onClick={() => window.print()} style={{ padding: "7px 16px", background: "#1a2230", border: "none", borderRadius: 4, color: "#fff", fontFamily: "'Share Tech Mono',monospace", fontSize: 10, letterSpacing: 1, cursor: "pointer" }}>
+                      🖨 Print / Save PDF
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <div className="empty"><div className="empty-ico">🔒</div><div className="empty-txt">Awaiting Stage 2 lead tech approval.</div></div>
