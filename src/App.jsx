@@ -73,15 +73,15 @@ const CSS = `
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#c0ccd8;border-radius:2px;}
 body{background:#e8edf2;font-family:'Share Tech Mono','Courier New',monospace;}
 
-.hdr{background:#1a2230;border-bottom:3px solid #ff6b35;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,.3);}
-.logo{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:4px;color:#fff;}
+.hdr{background:#ffffff;border-bottom:3px solid #ff6b35;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,.1);}
+.logo{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:4px;color:#1a2230;}
 .logo span{color:#ff6b35;}
 .live-badge{font-size:9px;letter-spacing:2px;background:#22aa55;color:#fff;padding:2px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;}
-.nav{display:flex;gap:3px;}
-.nb{padding:8px 16px;border:2px solid #2a3a4a;background:#111920;color:#c0ccd8;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:5px;transition:all .15s;font-weight:600;}
-.nb.on{background:#ff6b35;color:#fff;border-color:#ff6b35;font-weight:700;box-shadow:0 2px 8px rgba(255,107,53,.4);}
-.nb:hover:not(.on){color:#fff;border-color:#ff6b35;background:#1e2d3d;}
-.nb:disabled{opacity:0.35;cursor:not-allowed;}
+.nav{display:flex;gap:5px;}
+.nb{padding:8px 16px;border:2px solid #d0d8e0;background:#f0f4f8;color:#1a2230;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:5px;transition:all .15s;font-weight:700;}
+.nb.on{background:#ff6b35;color:#fff;border-color:#ff6b35;font-weight:700;box-shadow:0 2px 8px rgba(255,107,53,.3);}
+.nb:hover:not(.on):not(:disabled){color:#ff6b35;border-color:#ff6b35;background:#fff;}
+.nb:disabled{opacity:0.4;cursor:not-allowed;}
 .nb:disabled{opacity:.35;cursor:not-allowed;}
 
 .pg{padding:18px;max-width:920px;margin:0 auto;}
@@ -1043,6 +1043,43 @@ export default function App() {
                       {findings[c.id].note && <span className="flag-note">{findings[c.id].note}</span>}
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* Failure Note — Advisor AI Rewrite */}
+              {failureReason && (
+                <div style={{ background: "#fff", border: "2px solid #d0d8e0", borderRadius: 8, padding: 16, marginBottom: 20 }}>
+                  <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#ff6b35", fontWeight: 700, marginBottom: 10 }}>
+                    Reason for Failure — Tech {stage2Initials}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#1a2230", fontFamily: "'Share Tech Mono',monospace", padding: "10px 12px", background: "#f5f8fb", borderRadius: 5, marginBottom: 10, lineHeight: 1.6 }}>
+                    {failureReason}
+                  </div>
+                  {!failureReasonAI && (
+                    <button onClick={rewriteFailureNote} disabled={failureRewriteLoading}
+                      style={{ padding: "8px 16px", background: "#1a2230", border: "none", borderRadius: 4, color: "#fff", fontFamily: "'Share Tech Mono',monospace", fontSize: 10, letterSpacing: 1, cursor: "pointer", opacity: failureRewriteLoading ? 0.7 : 1 }}>
+                      {failureRewriteLoading ? "✦ Rewriting..." : "✦ AI Rewrite for Advisor"}
+                    </button>
+                  )}
+                  {failureReasonAI && (
+                    <div>
+                      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 8 }}>Select version to send to Shopmonkey:</div>
+                      <div onClick={() => setSelectedFailureNote("original")}
+                        style={{ padding: 10, borderRadius: 6, border: "2px solid " + (selectedFailureNote === "original" ? "#ff6b35" : "#d0d8e0"), background: selectedFailureNote === "original" ? "#fff8f5" : "#f9fbfc", cursor: "pointer", marginBottom: 8 }}>
+                        <div style={{ fontSize: 9, letterSpacing: 1, color: "#ff6b35", fontWeight: 700, marginBottom: 4 }}>TECH ORIGINAL {selectedFailureNote === "original" ? "✓ SELECTED" : ""}</div>
+                        <div style={{ fontSize: 11, color: "#1a2230", fontFamily: "'Share Tech Mono',monospace", lineHeight: 1.5 }}>{failureReason}</div>
+                      </div>
+                      <div onClick={() => setSelectedFailureNote("ai")}
+                        style={{ padding: 10, borderRadius: 6, border: "2px solid " + (selectedFailureNote === "ai" ? "#4fc3f7" : "#d0d8e0"), background: selectedFailureNote === "ai" ? "#f0f9ff" : "#f9fbfc", cursor: "pointer", marginBottom: 8 }}>
+                        <div style={{ fontSize: 9, letterSpacing: 1, color: "#4fc3f7", fontWeight: 700, marginBottom: 4 }}>AI REWRITTEN {selectedFailureNote === "ai" ? "✓ SELECTED" : ""}</div>
+                        <div style={{ fontSize: 11, color: "#1a2230", fontFamily: "'Share Tech Mono',monospace", lineHeight: 1.5 }}>{failureReasonAI}</div>
+                      </div>
+                      <button onClick={rewriteFailureNote} disabled={failureRewriteLoading}
+                        style={{ padding: "6px 12px", background: "transparent", border: "1px solid #d0d8e0", borderRadius: 4, color: "#7a8a9a", fontFamily: "'Share Tech Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}>
+                        {failureRewriteLoading ? "Rewriting..." : "↺ Regenerate"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
