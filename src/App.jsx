@@ -78,9 +78,10 @@ body{background:#e8edf2;font-family:'Share Tech Mono','Courier New',monospace;}
 .logo span{color:#ff6b35;}
 .live-badge{font-size:9px;letter-spacing:2px;background:#22aa55;color:#fff;padding:2px 8px;border-radius:3px;font-weight:700;text-transform:uppercase;}
 .nav{display:flex;gap:3px;}
-.nb{padding:7px 14px;border:1px solid #3a4a5a;background:transparent;color:#8899aa;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all .15s;}
-.nb.on{background:#ff6b35;color:#fff;border-color:#ff6b35;font-weight:600;}
-.nb:hover:not(.on){color:#fff;border-color:#5a6a7a;}
+.nb{padding:8px 16px;border:2px solid #2a3a4a;background:#111920;color:#c0ccd8;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:5px;transition:all .15s;font-weight:600;}
+.nb.on{background:#ff6b35;color:#fff;border-color:#ff6b35;font-weight:700;box-shadow:0 2px 8px rgba(255,107,53,.4);}
+.nb:hover:not(.on){color:#fff;border-color:#ff6b35;background:#1e2d3d;}
+.nb:disabled{opacity:0.35;cursor:not-allowed;}
 .nb:disabled{opacity:.35;cursor:not-allowed;}
 
 .pg{padding:18px;max-width:920px;margin:0 auto;}
@@ -276,6 +277,9 @@ export default function App() {
   const [partNotes, setPartNotes] = useState({});
   const [stage2Initials, setStage2Initials] = useState("");
   const [failureReason, setFailureReason] = useState("");
+  const [failureReasonAI, setFailureReasonAI] = useState("");
+  const [failureRewriteLoading, setFailureRewriteLoading] = useState(false);
+  const [selectedFailureNote, setSelectedFailureNote] = useState("original"); // "original" | "ai"
   const [stage2Done, setStage2Done] = useState(false);
   const [stage2CustomRows, setStage2CustomRows] = useState([mkCustomRow(), mkCustomRow(), mkCustomRow(), mkCustomRow()]);
   const [catFilter, setCatFilter] = useState("all");
@@ -294,7 +298,7 @@ export default function App() {
   const transDef = ALL_TRANS[ro.trans] || ALL_TRANS["68RFE"];
   const makeColor = MAKE_COLORS[transDef.make] || "#888";
 
-  // ── Load saved ROs on mount
+  // ── Load saved ROs on mount + auto-refresh every 30s when on RO tab
   useEffect(() => {
     if (relayUrl) loadSavedRos();
     // Register service worker for PWA
@@ -302,6 +306,12 @@ export default function App() {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   }, [relayUrl]);
+
+  useEffect(() => {
+    if (tab !== "ro" || !relayUrl) return;
+    const interval = setInterval(() => { loadSavedRos(); }, 30000);
+    return () => clearInterval(interval);
+  }, [tab, relayUrl]);
 
   const relay = () => relayUrl.replace(/\/$/, "");
 
@@ -479,9 +489,10 @@ export default function App() {
 
       // Step 2: Push all parts — relay auto-creates "Overhaul Transmission" service line
       if (allParts.length > 0) {
+        const activeNote = selectedFailureNote === "ai" && failureReasonAI ? failureReasonAI : failureReason;
         const pRes = await fetch(relay() + "/api/order/" + ro.orderId + "/push-parts", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ parts: allParts })
+          body: JSON.stringify({ parts: allParts, failureNote: activeNote })
         });
         const pData = await pRes.json();
         if (pData.ok) {
@@ -531,6 +542,31 @@ export default function App() {
   // ── Updating finding
   const updateFinding = (id, field, val) => {
     setFindings(f => ({ ...f, [id]: { ...f[id], [field]: val } }));
+  };
+
+  // ── AI rewrite failure note
+  const rewriteFailureNote = async () => {
+    if (!failureReason.trim()) return;
+    setFailureRewriteLoading(true);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 400,
+          system: "You are a professional automotive technician writing formal repair notes. Rewrite the technician's description of why a transmission failed into clear, professional language suitable for a customer repair order. Keep it factual, concise (2-4 sentences), and avoid jargon where possible. Return only the rewritten text, no preamble.",
+          messages: [{ role: "user", content: "Rewrite this failure description: " + failureReason }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content.map(b => b.text || "").join("").trim();
+      setFailureReasonAI(text);
+      setSelectedFailureNote("ai");
+    } catch (e) {
+      setFailureReasonAI("Could not generate rewrite. Please try again.");
+    }
+    setFailureRewriteLoading(false);
   };
 
   // ── Stage sign-off helpers
@@ -931,10 +967,31 @@ export default function App() {
               <textarea
                 placeholder="Describe why the unit failed (e.g. burnt clutches due to low fluid, worn pump gears, broken sun shell...)"
                 value={failureReason}
-                onChange={e => setFailureReason(e.target.value)}
+                onChange={e => { setFailureReason(e.target.value); setFailureReasonAI(""); setSelectedFailureNote("original"); }}
                 disabled={stage2Done}
                 style={{ width: "100%", minHeight: 80, padding: "10px 12px", border: "1px solid #d0d8e0", borderRadius: 6, fontFamily: "'Share Tech Mono',monospace", fontSize: 11, color: "#1a2230", background: stage2Done ? "#f5f8fb" : "#fff", resize: "vertical", boxSizing: "border-box" }}
               />
+              {failureReason.trim() && !stage2Done && (
+                <button onClick={rewriteFailureNote} disabled={failureRewriteLoading}
+                  style={{ marginTop: 8, padding: "7px 14px", background: "#1a2230", border: "none", borderRadius: 4, color: "#fff", fontFamily: "'Share Tech Mono',monospace", fontSize: 10, letterSpacing: 1, cursor: "pointer", opacity: failureRewriteLoading ? 0.7 : 1 }}>
+                  {failureRewriteLoading ? "✦ Rewriting..." : "✦ AI Rewrite"}
+                </button>
+              )}
+              {failureReasonAI && (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#7a8a9a", marginBottom: 8 }}>Choose version to send to Shopmonkey:</div>
+                  <div onClick={() => setSelectedFailureNote("original")}
+                    style={{ padding: 10, borderRadius: 6, border: "2px solid " + (selectedFailureNote === "original" ? "#ff6b35" : "#d0d8e0"), background: selectedFailureNote === "original" ? "#fff8f5" : "#f9fbfc", cursor: "pointer", marginBottom: 8 }}>
+                    <div style={{ fontSize: 9, letterSpacing: 1, color: "#ff6b35", fontWeight: 700, marginBottom: 4 }}>TECH ORIGINAL {selectedFailureNote === "original" ? "✓ SELECTED" : ""}</div>
+                    <div style={{ fontSize: 11, color: "#1a2230", fontFamily: "'Share Tech Mono',monospace" }}>{failureReason}</div>
+                  </div>
+                  <div onClick={() => setSelectedFailureNote("ai")}
+                    style={{ padding: 10, borderRadius: 6, border: "2px solid " + (selectedFailureNote === "ai" ? "#4fc3f7" : "#d0d8e0"), background: selectedFailureNote === "ai" ? "#f0f9ff" : "#f9fbfc", cursor: "pointer" }}>
+                    <div style={{ fontSize: 9, letterSpacing: 1, color: "#4fc3f7", fontWeight: 700, marginBottom: 4 }}>AI REWRITTEN {selectedFailureNote === "ai" ? "✓ SELECTED" : ""}</div>
+                    <div style={{ fontSize: 11, color: "#1a2230", fontFamily: "'Share Tech Mono',monospace" }}>{failureReasonAI}</div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="sign-bar">
