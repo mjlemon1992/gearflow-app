@@ -522,18 +522,17 @@ export default function App() {
     setTpLoading(t => ({ ...t, [part.id]: true }));
     try {
       const price = getPrice(part);
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch(relay() + "/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 800,
           system: "You are a transmission service advisor coach. Generate brief, honest talking points for " + ro.trans + " (" + transDef.make + ") rebuild parts. Plain language only. Respond ONLY with a JSON object with four keys: why, risk, pitch, pair. Each value is one sentence. No markdown, no preamble.",
-          messages: [{ role: "user", content: "Part: " + part.name + " (" + (part.part || "no part#") + "). Category: " + part.category + ". " + (price ? "Price: $" + price + "." : "") + " " + (partNotes[part.id] ? "Tech note: " + partNotes[part.id] : "") }]
+          prompt: "Part: " + part.name + " (" + (part.part || "no part#") + "). Category: " + part.category + ". " + (price ? "Price: $" + price + "." : "") + " " + (partNotes[part.id] ? "Tech note: " + partNotes[part.id] : ""),
+          max_tokens: 800
         })
       });
       const data = await res.json();
-      const text = data.content.map(b => b.text || "").join("").replace(/```json|```/g, "").trim();
+      const text = (data.content || []).map(b => b.text || "").join("").replace(/```json|```/g, "").trim();
       const parsed = JSON.parse(text);
       setTalkingPoints(t => ({ ...t, [part.id]: parsed }));
     } catch {
@@ -593,18 +592,17 @@ export default function App() {
     if (!failureReason.trim()) return;
     setFailureRewriteLoading(true);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch(relay() + "/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 400,
           system: "You are a professional automotive technician writing formal repair notes. Rewrite the technician's description of why a transmission failed into clear, professional language suitable for a customer repair order. Keep it factual, concise (2-4 sentences), and avoid jargon where possible. Return only the rewritten text, no preamble.",
-          messages: [{ role: "user", content: "Rewrite this failure description: " + failureReason }]
+          prompt: "Rewrite this failure description: " + failureReason,
+          max_tokens: 400
         })
       });
       const data = await res.json();
-      const text = data.content.map(b => b.text || "").join("").trim();
+      const text = (data.content || []).map(b => b.text || "").join("").trim();
       setFailureReasonAI(text);
       setSelectedFailureNote("ai");
     } catch (e) {
