@@ -279,7 +279,10 @@ export default function App() {
   const [failureReason, setFailureReason] = useState("");
   const [failureReasonAI, setFailureReasonAI] = useState("");
   const [failureRewriteLoading, setFailureRewriteLoading] = useState(false);
-  const [selectedFailureNote, setSelectedFailureNote] = useState("original"); // "original" | "ai"
+  const [selectedFailureNote, setSelectedFailureNote] = useState("original");
+  const [deleteRoPin, setDeleteRoPin] = useState("");
+  const [deleteRoTarget, setDeleteRoTarget] = useState(null);
+  const [deleteRoError, setDeleteRoError] = useState(false); // "original" | "ai"
   const [stage2Done, setStage2Done] = useState(false);
   const [stage2CustomRows, setStage2CustomRows] = useState([mkCustomRow(), mkCustomRow(), mkCustomRow(), mkCustomRow()]);
   const [catFilter, setCatFilter] = useState("all");
@@ -544,6 +547,30 @@ export default function App() {
     setFindings(f => ({ ...f, [id]: { ...f[id], [field]: val } }));
   };
 
+  // ── Delete RO from relay
+  const deleteRoFromRelay = async (roNumber) => {
+    try {
+      await fetch(relay() + "/api/ro/" + roNumber + "/delete", { method: "DELETE" });
+      setSavedRos(prev => prev.filter(r => r.roNumber !== roNumber));
+    } catch (e) { /* ignore */ }
+    setDeleteRoTarget(null);
+    setDeleteRoPin("");
+    setDeleteRoError(false);
+  };
+
+  const handleDeleteRoPin = (digit) => {
+    const next = deleteRoPin + digit;
+    setDeleteRoPin(next);
+    if (next.length === 4) {
+      if (next === ADMIN_PIN) {
+        deleteRoFromRelay(deleteRoTarget);
+      } else {
+        setDeleteRoError(true);
+        setTimeout(() => { setDeleteRoPin(""); setDeleteRoError(false); }, 800);
+      }
+    }
+  };
+
   // ── AI rewrite failure note
   const rewriteFailureNote = async () => {
     if (!failureReason.trim()) return;
@@ -687,21 +714,26 @@ export default function App() {
                   const sc = stageColors[r.stage] || "#7a8a9a";
                   const td = ALL_TRANS[r.trans];
                   return (
-                    <div key={r.roNumber} onClick={() => loadRoFromRelay(r.roNumber)}
-                      style={{ background: "#fff", border: "2px solid " + sc, borderRadius: 8, padding: 16, cursor: "pointer", transition: "all .15s", boxShadow: "0 2px 8px rgba(0,0,0,.08)" }}
+                    <div key={r.roNumber}
+                      style={{ background: "#fff", border: "2px solid " + sc, borderRadius: 8, padding: 16, transition: "all .15s", boxShadow: "0 2px 8px rgba(0,0,0,.08)", position: "relative" }}
                       onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                       onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                        <span style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 13, color: "#ff6b35", fontWeight: 700 }}>{r.roNumber}</span>
-                        <span style={{ fontSize: 8, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, background: sc + "22", color: sc, fontWeight: 700 }}>{stageLabels[r.stage] || r.stage}</span>
-                      </div>
-                      <div style={{ fontSize: 12, color: "#1a2230", fontWeight: 600, marginBottom: 4 }}>{r.vehicle || "Vehicle not set"}</div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <span style={{ fontSize: 10, color: MAKE_COLORS[td?.make] || "#888", fontWeight: 600 }}>{td?.label || r.trans}</span>
-                        <span style={{ fontSize: 9, color: "#aabbcc" }}>{new Date(r.updatedAt).toLocaleDateString()} {new Date(r.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
-                      </div>
-                      <div style={{ marginTop: 10, width: "100%", height: 4, background: "#f0f4f8", borderRadius: 2 }}>
-                        <div style={{ height: 4, borderRadius: 2, background: sc, width: r.stage === "ro" ? "10%" : r.stage === "stage1" ? "35%" : r.stage === "stage2" ? "65%" : "100%", transition: "width .3s" }} />
+                      <button onClick={e => { e.stopPropagation(); setDeleteRoTarget(r.roNumber); setDeleteRoPin(""); setDeleteRoError(false); }}
+                        style={{ position: "absolute", top: 8, right: 8, background: "transparent", border: "none", color: "#c0ccd8", fontSize: 16, cursor: "pointer", padding: "2px 6px", borderRadius: 3, lineHeight: 1, zIndex: 1 }}
+                        title="Delete RO">&#x2715;</button>
+                      <div onClick={() => loadRoFromRelay(r.roNumber)} style={{ cursor: "pointer" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                          <span style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 13, color: "#ff6b35", fontWeight: 700 }}>{r.roNumber}</span>
+                          <span style={{ fontSize: 8, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 3, background: sc + "22", color: sc, fontWeight: 700, marginRight: 20 }}>{stageLabels[r.stage] || r.stage}</span>
+                        </div>
+                        <div style={{ fontSize: 12, color: "#1a2230", fontWeight: 600, marginBottom: 4 }}>{r.vehicle || "Vehicle not set"}</div>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <span style={{ fontSize: 10, color: MAKE_COLORS[td?.make] || "#888", fontWeight: 600 }}>{td?.label || r.trans}</span>
+                          <span style={{ fontSize: 9, color: "#aabbcc" }}>{new Date(r.updatedAt).toLocaleDateString()} {new Date(r.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                        </div>
+                        <div style={{ marginTop: 10, width: "100%", height: 4, background: "#f0f4f8", borderRadius: 2 }}>
+                          <div style={{ height: 4, borderRadius: 2, background: sc, width: r.stage === "ro" ? "10%" : r.stage === "stage1" ? "35%" : r.stage === "stage2" ? "65%" : "100%", transition: "width .3s" }} />
+                        </div>
                       </div>
                     </div>
                   );
@@ -709,6 +741,29 @@ export default function App() {
               </div>
               <div style={{ marginTop: 8, fontSize: 9, color: "#aabbcc", letterSpacing: 1, textAlign: "right" }}>
                 {loadingRos ? "Loading..." : savedRos.length + " active RO" + (savedRos.length !== 1 ? "s" : "") + " — tap to resume"}
+              </div>
+            </div>
+          )}
+
+          {/* Delete RO PIN modal */}
+          {deleteRoTarget && (
+            <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,.6)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ background: "#1a2230", borderRadius: 12, padding: 32, minWidth: 280, textAlign: "center", boxShadow: "0 8px 40px rgba(0,0,0,.4)" }}>
+                <div style={{ fontFamily: "'Orbitron',sans-serif", fontSize: 13, color: "#f44336", letterSpacing: 3, marginBottom: 6 }}>DELETE RO</div>
+                <div style={{ fontSize: 11, color: "#8899aa", marginBottom: 20 }}>Enter admin PIN to delete RO {deleteRoTarget}</div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center", marginBottom: 24 }}>
+                  {[0,1,2,3].map(i => (
+                    <div key={i} style={{ width: 16, height: 16, borderRadius: "50%", background: i < deleteRoPin.length ? (deleteRoError ? "#f44336" : "#ff6b35") : "#2a3a4a", transition: "all .15s" }} />
+                  ))}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+                  {[1,2,3,4,5,6,7,8,9,"",0,"DEL"].map((k, i) => (
+                    <button key={i} onClick={() => { if (k === "DEL") setDeleteRoPin(p => p.slice(0,-1)); else if (k !== "") handleDeleteRoPin(String(k)); }}
+                      style={{ padding: "14px 0", background: k === "" ? "transparent" : "#111920", border: "none", borderRadius: 6, color: "#fff", fontSize: 16, cursor: k === "" ? "default" : "pointer", fontFamily: "inherit" }}>{k}</button>
+                  ))}
+                </div>
+                <button onClick={() => { setDeleteRoTarget(null); setDeleteRoPin(""); }}
+                  style={{ background: "transparent", border: "none", color: "#8899aa", cursor: "pointer", fontSize: 11, letterSpacing: 2 }}>CANCEL</button>
               </div>
             </div>
           )}
