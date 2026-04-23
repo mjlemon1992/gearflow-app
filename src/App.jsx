@@ -552,6 +552,23 @@ export default function App() {
     try {
       await fetch(relay() + "/api/ro/" + roNumber + "/delete", { method: "DELETE" });
       setSavedRos(prev => prev.filter(r => r.roNumber !== roNumber));
+      // If the deleted RO is the currently active one, reset all state
+      if (ro.ro === roNumber) {
+        setRo({ ro: "", vehicle: "", year: "", trans: "", orderId: "", customer: "" });
+        setFindings({});
+        setStage1Done(false);
+        setStage1Initials("");
+        setStage2Done(false);
+        setStage2Initials("");
+        setChosenParts([]);
+        setStage1CustomRows([{ name: "", part: "", supplier: "", price: "" }]);
+        setStage2CustomRows([{ name: "", part: "", supplier: "", price: "" }]);
+        setFailureReason("");
+        setFailureReasonAI("");
+        setPushStatus("idle");
+        setPushItems([]);
+        setTab("ro");
+      }
     } catch (e) { /* ignore */ }
     setDeleteRoTarget(null);
     setDeleteRoPin("");
